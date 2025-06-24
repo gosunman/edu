@@ -7,19 +7,20 @@
     "deploy": "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_PHeoBRQkVVMw2imIk2kC0UY8d6pK/EKmlhSkdtt"
   },
   "dependencies": {
-    "@expo/metro-runtime": "^5.0.4",
-    "@expo/webpack-config": "^19.0.1",
-    "expo": "^53.0.12",
-    "expo-status-bar": "^2.2.3",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-native": "^0.80.0",
-    "react-native-web": "^0.20.0"
+    "@expo/metro-runtime": "5.0.4",
+    "@expo/webpack-config": "18.0.0",
+    "expo": "53.0.12",
+    "expo-status-bar": "2.2.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.4",
+    "react-native-web": "0.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/react": "^19.1.8",
-    "typescript": "~5.8.3"
+    "@types/react": "19.0.10",
+    "typescript": "~5.8.3",
+    "webpack-dev-server": "^4.15.1"
   },
   "private": true
 }
