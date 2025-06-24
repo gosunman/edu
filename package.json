@@ -4,6 +4,10 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build": "npx expo export --platform web",
     "deploy": "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_PHeoBRQkVVMw2imIk2kC0UY8d6pK/EKmlhSkdtt"
   },
   "dependencies": {
