@@ -1,4 +1,4 @@
-import { FlashCard } from '../types';
+import { FlashCard } from '@/types';
 
 export const flashCards: FlashCard[] = [
   {

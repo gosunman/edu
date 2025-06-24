@@ -1,172 +1,36 @@
-# 🔬 과학 학습실 - 중1,2,3학년 과학 교육 웹페이지
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-중고등학생들을 위한 인터랙티브 과학 학습 플랫폼입니다. 암기 카드와 3D 시뮬레이션을 통해 과학을 재미있게 학습할 수 있습니다.
+## Getting Started
 
-## 🎯 프로젝트 목적
+First, run the development server:
 
-- **중1,2,3학년 학생들의 과학 학습 동기부여**
-- **인터랙티브한 학습 경험 제공**
-- **반복 학습을 통한 개념 이해도 향상**
-- **모바일 친화적인 학습 환경 구축**
-
-## ✨ 주요 기능
-
-### 📚 **암기 카드 시스템**
-- 단원별 핵심 개념 학습
-- 터치/스와이프 제스처로 카드 조작
-- 애니메이션 효과로 재미있는 학습 경험
-- 정답률 추적 및 점수 시스템
-
-### 🎮 **3D 시뮬레이션** (준비 중)
-- 원자 구조, 전기 회로, 화학 반응 등 3D 체험
-- 직관적인 실험 시뮬레이션
-- 인터랙티브한 학습 콘텐츠
-
-### 📊 **학습 진도 관리**
-- 실시간 학습 통계 대시보드
-- 단원별 진행률 시각화
-- 개인별 학습 기록 추적
-
-### 🔐 **사용자 인증**
-- Google 로그인 연동 (준비 중)
-- 개인별 학습 데이터 저장
-
-## 🛠️ 기술 스택
-
-- **Frontend**: React Native + Expo
-- **Web Support**: React Native Web
-- **Language**: TypeScript
-- **Styling**: React Native StyleSheet
-- **Animation**: React Native Animated API
-- **Platform**: Web, iOS, Android
-
-## 📱 지원 플랫폼
-
-- 🌐 **Web**: 모바일 최적화된 웹 브라우저
-- 📱 **iOS**: Expo Go 앱 또는 네이티브 앱
-- 🤖 **Android**: Expo Go 앱 또는 네이티브 앱
-
-## 🚀 설치 및 실행
-
-### 1. 프로젝트 클론
 ```bash
-git clone [repository-url]
-cd edu
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-### 2. 의존성 설치
-```bash
-npm install
-```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### 3. 개발 서버 실행
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-#### 웹 버전 (권장)
-```bash
-npm run web
-```
-브라우저에서 `http://localhost:8081` 접속
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-#### 모바일 버전
-```bash
-# iOS 시뮬레이터
-npm run ios
+## Learn More
 
-# Android 에뮬레이터
-npm run android
+To learn more about Next.js, take a look at the following resources:
 
-# Expo Go 앱으로 테스트
-npm start
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## 📖 사용법
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### 🎯 학습 모드 선택
-1. **암기 카드 모드**: 기본 학습 모드
-2. **3D 시뮬레이션 모드**: 향후 업데이트 예정
+## Deploy on Vercel
 
-### 📚 단원별 학습
-- **중1**: 물질의 구성 (원자, 분자, 원소)
-- **중2**: 전기와 자기, 생태계
-- **중3**: 화학 반응 (산화환원, 중화반응)
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### 🎮 암기 카드 사용법
-1. **카드 터치**: 질문/답변 확인
-2. **스와이프 제스처**:
-   - 오른쪽 스와이프: 정답
-   - 왼쪽 스와이프: 오답
-3. **버튼 클릭**: 정답/오답 직접 입력
-
-## 🎨 디자인 특징
-
-### 🎨 **색상 팔레트**
-- **Primary**: #667eea (과학적 파란색)
-- **Secondary**: #FF6B9D (핑크), #4ECDC4 (민트)
-- **Background**: #F8F9FA (연한 회색)
-- **Text**: #2C3E50 (진한 회색)
-
-### 📱 **UI/UX**
-- 모바일 우선 반응형 디자인
-- 카드 기반 레이아웃
-- 부드러운 애니메이션 효과
-- 직관적인 아이콘 사용
-
-## 📊 학습 데이터
-
-### 📈 **진행률 시스템**
-- 각 단원별 진행률 표시
-- 색상별 진행 상황 구분:
-  - 🟢 80% 이상: 녹색
-  - 🟡 60-79%: 주황색
-  - 🔴 60% 미만: 빨간색
-
-### 🏆 **점수 시스템**
-- 정답률 기반 점수 계산
-- 반복 학습으로 점수 향상
-- 학습 동기부여를 위한 게임화 요소
-
-## 🔮 향후 개발 계획
-
-### 🎮 **3D 시뮬레이션**
-- [ ] 원자 구조 3D 모델
-- [ ] 전기 회로 시뮬레이션
-- [ ] 화학 반응 애니메이션
-- [ ] 생태계 인터랙티브 모델
-
-### 🔐 **사용자 시스템**
-- [ ] Google 로그인 연동
-- [ ] 개인별 학습 데이터 저장
-- [ ] 학습 진도 동기화
-- [ ] 성취도 배지 시스템
-
-### 📚 **콘텐츠 확장**
-- [ ] 더 많은 과학 단원 추가
-- [ ] 난이도별 문제 구성
-- [ ] 퀴즈 및 시험 모드
-- [ ] 학습 커뮤니티 기능
-
-### 🎯 **학습 분석**
-- [ ] 개인별 학습 패턴 분석
-- [ ] 취약점 진단 및 추천
-- [ ] 학습 효율성 리포트
-- [ ] AI 기반 개인화 학습
-
-## 🤝 기여하기
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
-
-## 📞 문의
-
-프로젝트에 대한 문의사항이나 제안사항이 있으시면 언제든 연락주세요!
-
----
-
-**🔬 과학의 신비로운 세계를 함께 탐험해보세요!** 🚀 
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

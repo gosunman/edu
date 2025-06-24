@@ -1,4 +1,4 @@
-import { Unit } from '../types';
+import { Unit } from '@/types';
 
 export const units: Unit[] = [
   {
