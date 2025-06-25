@@ -5,6 +5,7 @@ import { units } from '@/data/units';
 import { flashCards } from '@/data/flashCards';
 import UnitList from '@/components/UnitList';
 import FlashCardSection from '@/components/FlashCardSection';
+import AuthWrapper from '@/components/AuthWrapper';
 
 export default function Home() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -45,15 +46,15 @@ export default function Home() {
       {/* Header */}
       <header className="header">
         <div className="header-content">
-          <div className="header-icon">🔬</div>
-          <div className="header-text">
-            <h1 className="header-title">과학 학습실</h1>
-            <p className="header-subtitle">중1,2,3학년 과학 교육</p>
+          <div className="header-left">
+            <div className="header-icon">🔬</div>
+            <div className="header-text">
+              <h1 className="header-title">과학 학습실</h1>
+              <p className="header-subtitle">중1,2,3학년 과학 교육</p>
+            </div>
           </div>
+          <AuthWrapper />
         </div>
-        <button className="login-button">
-          Google 로그인
-        </button>
       </header>
 
       <main className="main-content">

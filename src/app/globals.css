@@ -62,7 +62,12 @@ a {
 .header-content {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
 }
 
 .header-icon {
@@ -85,6 +90,7 @@ a {
   opacity: 0.8;
 }
 
+/* Login Button */
 .login-button {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
@@ -94,12 +100,59 @@ a {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  align-self: flex-end;
   transition: background-color 0.3s;
 }
 
 .login-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
+}
+
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* User Section */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
+.logout-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* Main Content */
@@ -427,6 +480,31 @@ a {
     padding: 15px;
   }
   
+  /* 헤더 - 모바일에서도 오른쪽 유지 */
+  .header-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-left {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .header-icon {
+    font-size: 24px;
+    margin-right: 10px;
+  }
+  
+  .header-title {
+    font-size: 18px;
+  }
+  
+  .header-subtitle {
+    font-size: 12px;
+  }
+  
   /* 통계 카드 - 모바일에서도 가로 배치 유지 */
   .stats-container {
     flex-direction: row;
@@ -477,6 +555,32 @@ a {
   .control-button {
     padding: 12px;
     font-size: 14px;
+  }
+  
+  /* 사용자 섹션 - 모바일에서도 오른쪽 유지 */
+  .user-section {
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .user-info {
+    flex-direction: row;
+    gap: 8px;
+  }
+  
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .user-name {
+    font-size: 12px;
+  }
+  
+  .logout-button {
+    padding: 6px 12px;
+    font-size: 11px;
   }
   
   .unit-header {
