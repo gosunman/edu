@@ -30,36 +30,40 @@ export default function BottomNavigation({
 
   return (
     <nav className="bottom-navigation">
-      <div className="level-info">
-        <span className="level-text">Lv {currentLv}</span>
-        <span className="level-separator">/</span>
-        <span className="total-level-text">Total {totalLv} Lv</span>
+      <div className="nav-container">
+        <button
+          className={`nav-item ${activeMode === 'main' ? 'active' : ''}`}
+          onClick={() => onModeChange('main')}
+        >
+          <div className="nav-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <span className="nav-label">홈</span>
+        </button>
+
+        <div className="level-indicator">
+          <div className="level-badge">
+            <span className="level-number">{currentLv}</span>
+            <span className="level-separator">/</span>
+            <span className="total-level">{totalLv}</span>
+          </div>
+        </div>
+
+        <button
+          className={`nav-item ${activeMode === 'settings' ? 'active' : ''}`}
+          onClick={onSettingClick}
+        >
+          <div className="nav-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <span className="nav-label">설정</span>
+        </button>
       </div>
-
-      <button
-        className={`nav-item ${activeMode === 'main' ? 'active' : ''}`}
-        onClick={() => onModeChange('main')}
-      >
-        <div className="nav-icon">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-        </div>
-        <span className="nav-label">Home</span>
-      </button>
-
-      <button
-        className="nav-item setting-nav"
-        onClick={onSettingClick}
-      >
-        <div className="nav-icon">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        </div>
-        <span className="nav-label">Setting</span>
-      </button>
 
       <style jsx>{`
         .bottom-navigation {
@@ -67,71 +71,49 @@ export default function BottomNavigation({
           bottom: 0;
           left: 0;
           right: 0;
-          background: white;
+          background: #ffffff;
           border-top: 1px solid #e5e7eb;
+          z-index: 100;
+          padding: 12px 0 24px 0;
+          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
           display: flex;
           justify-content: space-around;
           align-items: center;
-          padding: 8px 0 16px 0;
-          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
-          z-index: 100;
-          backdrop-filter: blur(10px);
-        }
-
-        .level-info {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          padding: 8px 12px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 12px;
-          color: white;
-          font-weight: 600;
-          font-size: 12px;
-          box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-        }
-
-        .level-text {
-          font-size: 14px;
-          font-weight: 700;
-        }
-
-        .level-separator {
-          opacity: 0.7;
-        }
-
-        .total-level-text {
-          font-size: 11px;
-          opacity: 0.9;
+          max-width: 400px;
+          margin: 0 auto;
+          padding: 0 20px;
         }
 
         .nav-item {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 4px;
-          padding: 8px 12px;
+          gap: 6px;
+          padding: 12px 16px;
           border: none;
           background: transparent;
           cursor: pointer;
-          transition: all 0.2s ease;
-          border-radius: 12px;
-          min-width: 60px;
+          transition: all 0.3s ease;
+          border-radius: 16px;
+          min-width: 80px;
           color: #6b7280;
+          position: relative;
         }
 
         .nav-item:hover {
+          color: #667eea;
           background: rgba(102, 126, 234, 0.05);
+          transform: translateY(-2px);
         }
 
         .nav-item.active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .nav-item.active .nav-icon {
-          transform: scale(1.1);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+          transform: translateY(-4px);
         }
 
         .nav-icon {
@@ -140,68 +122,110 @@ export default function BottomNavigation({
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.2s ease;
+          transition: all 0.3s ease;
         }
 
         .nav-icon svg {
           width: 20px;
           height: 20px;
           stroke: currentColor;
+          stroke-width: 2;
         }
 
         .nav-label {
-          font-size: 11px;
-          font-weight: 500;
+          font-size: 12px;
+          font-weight: 600;
           line-height: 1;
           text-align: center;
+          transition: all 0.3s ease;
         }
 
-        .nav-item.active .nav-label {
+        .level-indicator {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .level-badge {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 8px 16px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 20px;
+          color: white;
+          font-weight: 700;
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+          transition: all 0.3s ease;
+        }
+
+        .level-badge:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .level-number {
+          font-size: 16px;
+          font-weight: 800;
+        }
+
+        .level-separator {
+          font-size: 12px;
+          opacity: 0.8;
+          font-weight: 600;
+        }
+
+        .total-level {
+          font-size: 14px;
+          opacity: 0.9;
           font-weight: 600;
         }
 
         @media (max-width: 480px) {
           .bottom-navigation {
-            padding: 6px 0 12px 0;
+            padding: 10px 0 20px 0;
           }
 
-          .level-info {
-            padding: 6px 8px;
-            font-size: 11px;
-          }
-
-          .level-text {
-            font-size: 12px;
-          }
-
-          .total-level-text {
-            font-size: 10px;
+          .nav-container {
+            padding: 0 16px;
           }
 
           .nav-item {
-            padding: 6px 8px;
-            min-width: 50px;
+            padding: 10px 12px;
+            min-width: 70px;
           }
 
           .nav-icon {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
           }
 
           .nav-icon svg {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
           }
 
           .nav-label {
-            font-size: 10px;
+            font-size: 11px;
+          }
+
+          .level-badge {
+            padding: 6px 12px;
+          }
+
+          .level-number {
+            font-size: 14px;
+          }
+
+          .total-level {
+            font-size: 12px;
           }
         }
 
         /* iOS Safari safe area support */
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
           .bottom-navigation {
-            padding-bottom: calc(16px + env(safe-area-inset-bottom));
+            padding-bottom: calc(24px + env(safe-area-inset-bottom));
           }
         }
       `}</style>
