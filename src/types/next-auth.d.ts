@@ -10,6 +10,7 @@ declare module "next-auth" {
       school?: string | null;
       grade?: number | null;
       enrollment_year?: number | null;
+      achievement_goal?: 'basic' | 'advanced' | null;
       stats?: {
         totalCorrectAnswers: number;
         totalAttempts: number;
@@ -28,6 +29,7 @@ declare module "next-auth" {
     school?: string | null;
     grade?: number | null;
     enrollment_year?: number | null;
+    achievement_goal?: 'basic' | 'advanced' | null;
   }
 }
 
@@ -37,5 +39,6 @@ declare module "next-auth/jwt" {
     school?: string | null;
     grade?: number | null;
     enrollment_year?: number | null;
+    achievement_goal?: 'basic' | 'advanced' | null;
   }
 } 

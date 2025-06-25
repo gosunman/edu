@@ -55,6 +55,7 @@ const handler = NextAuth({
             session.user.school = user.school;
             session.user.grade = user.grade;
             session.user.enrollment_year = user.enrollment_year;
+            session.user.achievement_goal = user.achievement_goal;
           }
           
           // 사용자 통계 가져오기

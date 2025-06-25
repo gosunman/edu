@@ -263,9 +263,11 @@ export class AuthService {
 
   // 사용자 정보 업데이트
   static async updateUserProfile(userId: string, profileData: {
+    name?: string;
     school?: string;
     grade?: number;
     enrollment_year?: number;
+    achievement_goal?: 'basic' | 'advanced';
   }): Promise<User | null> {
     try {
       const { data, error } = await supabase

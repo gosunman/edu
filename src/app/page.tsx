@@ -8,7 +8,6 @@ import UnitList from '@/components/UnitList';
 import FlashCardSection from '@/components/FlashCardSection';
 import AuthWrapper from '@/components/AuthWrapper';
 import ProfileSetup from '@/components/ProfileSetup';
-import UserProfile from '@/components/UserProfile';
 import { AuthService } from '@/lib/auth';
 
 export default function Home() {
@@ -116,11 +115,6 @@ export default function Home() {
             오늘도 과학의 신비로운 세계를 탐험해볼까요?
           </p>
         </section>
-
-        {/* User Profile Section */}
-        {session?.user && (
-          <UserProfile />
-        )}
 
         {/* Quick Stats - 가로 배치 */}
         <section className="stats-container">

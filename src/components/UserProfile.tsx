@@ -1,17 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { AuthService } from '@/lib/auth';
 
-export default function UserProfile() {
+interface UserProfileProps {
+  isEditing?: boolean;
+  onEditingChange?: (editing: boolean) => void;
+}
+
+export default function UserProfile({ isEditing: externalIsEditing, onEditingChange }: UserProfileProps) {
   const { data: session, update } = useSession();
-  const [isEditing, setIsEditing] = useState(false);
+  const [internalIsEditing, setInternalIsEditing] = useState(false);
+  const [name, setName] = useState(session?.user?.name || '');
   const [school, setSchool] = useState(session?.user?.school || '');
   const [enrollmentYear, setEnrollmentYear] = useState<number>(
     session?.user?.enrollment_year || new Date().getFullYear()
   );
+  const [achievementGoal, setAchievementGoal] = useState<'basic' | 'advanced'>(
+    session?.user?.achievement_goal || 'basic'
+  );
   const [isLoading, setIsLoading] = useState(false);
+
+  // 외부에서 편집 모드가 제어되면 그것을 사용, 아니면 내부 상태 사용
+  const isEditing = externalIsEditing !== undefined ? externalIsEditing : internalIsEditing;
 
   const currentGrade = session?.user?.enrollment_year 
     ? AuthService.calculateCurrentGrade(session.user.enrollment_year)
@@ -23,14 +35,21 @@ export default function UserProfile() {
     setIsLoading(true);
     try {
       const updatedUser = await AuthService.updateUserProfile(session.user.id, {
+        name: name.trim(),
         school: school.trim(),
         enrollment_year: enrollmentYear,
         grade: AuthService.calculateCurrentGrade(enrollmentYear),
+        achievement_goal: achievementGoal,
       });
 
       if (updatedUser) {
         await update();
-        setIsEditing(false);
+        const newEditingState = false;
+        if (onEditingChange) {
+          onEditingChange(newEditingState);
+        } else {
+          setInternalIsEditing(newEditingState);
+        }
       }
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -40,40 +59,55 @@ export default function UserProfile() {
   };
 
   const handleCancel = () => {
+    setName(session?.user?.name || '');
     setSchool(session?.user?.school || '');
     setEnrollmentYear(session?.user?.enrollment_year || new Date().getFullYear());
-    setIsEditing(false);
+    setAchievementGoal(session?.user?.achievement_goal || 'basic');
+    const newEditingState = false;
+    if (onEditingChange) {
+      onEditingChange(newEditingState);
+    } else {
+      setInternalIsEditing(newEditingState);
+    }
   };
+
+  const handleStartEditing = () => {
+    const newEditingState = true;
+    if (onEditingChange) {
+      onEditingChange(newEditingState);
+    } else {
+      setInternalIsEditing(newEditingState);
+    }
+  };
+
+  // 세션 데이터가 변경되면 폼 데이터도 업데이트
+  useEffect(() => {
+    if (session?.user) {
+      setName(session.user.name || '');
+      setSchool(session.user.school || '');
+      setEnrollmentYear(session.user.enrollment_year || new Date().getFullYear());
+      setAchievementGoal(session.user.achievement_goal || 'basic');
+    }
+  }, [session?.user]);
 
   if (!session?.user) return null;
 
   return (
     <div className="user-profile">
-      <div className="profile-header">
-        <h3 className="profile-title">프로필 정보</h3>
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="edit-button"
-          >
-            편집
-          </button>
-        )}
-      </div>
-
       <div className="profile-content">
-        <div className="profile-item">
-          <span className="profile-label">이름</span>
-          <span className="profile-value">{session.user.name}</span>
-        </div>
-
-        <div className="profile-item">
-          <span className="profile-label">이메일</span>
-          <span className="profile-value">{session.user.email}</span>
-        </div>
-
         {isEditing ? (
           <>
+            <div className="profile-item">
+              <span className="profile-label">이름</span>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="profile-input"
+                placeholder="이름을 입력하세요"
+              />
+            </div>
+
             <div className="profile-item">
               <span className="profile-label">학교</span>
               <input
@@ -107,10 +141,22 @@ export default function UserProfile() {
               </span>
             </div>
 
+            <div className="profile-item">
+              <span className="profile-label">희망 성취 목표</span>
+              <select
+                value={achievementGoal}
+                onChange={(e) => setAchievementGoal(e.target.value as 'basic' | 'advanced')}
+                className="profile-select"
+              >
+                <option value="basic">기본</option>
+                <option value="advanced">심화</option>
+              </select>
+            </div>
+
             <div className="profile-actions">
               <button
                 onClick={handleSave}
-                disabled={isLoading || !school.trim()}
+                disabled={isLoading || !name.trim() || !school.trim()}
                 className="save-button"
               >
                 {isLoading ? '저장 중...' : '저장'}
@@ -126,6 +172,11 @@ export default function UserProfile() {
           </>
         ) : (
           <>
+            <div className="profile-item">
+              <span className="profile-label">이름</span>
+              <span className="profile-value">{session.user.name}</span>
+            </div>
+
             <div className="profile-item">
               <span className="profile-label">학교</span>
               <span className="profile-value">
@@ -143,6 +194,15 @@ export default function UserProfile() {
                 )}
               </span>
             </div>
+
+            <div className="profile-item">
+              <span className="profile-label">희망 성취 목표</span>
+              <span className="profile-value">
+                <span className={`goal-badge ${session.user.achievement_goal === 'advanced' ? 'advanced' : 'basic'}`}>
+                  {session.user.achievement_goal === 'advanced' ? '심화' : '기본'}
+                </span>
+              </span>
+            </div>
           </>
         )}
       </div>
@@ -153,36 +213,6 @@ export default function UserProfile() {
           border-radius: 12px;
           padding: 24px;
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-          margin-bottom: 24px;
-        }
-
-        .profile-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .profile-title {
-          font-size: 18px;
-          font-weight: 600;
-          color: #1f2937;
-          margin: 0;
-        }
-
-        .edit-button {
-          background: #3b82f6;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-size: 14px;
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-
-        .edit-button:hover {
-          background: #2563eb;
         }
 
         .profile-content {
@@ -239,6 +269,23 @@ export default function UserProfile() {
           font-weight: 600;
         }
 
+        .goal-badge {
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .goal-badge.basic {
+          background: #10b981;
+          color: white;
+        }
+
+        .goal-badge.advanced {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+        }
+
         .profile-actions {
           display: flex;
           gap: 12px;
@@ -256,16 +303,21 @@ export default function UserProfile() {
         }
 
         .save-button {
-          background: #10b981;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
+          box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .save-button:hover:not(:disabled) {
-          background: #059669;
+          background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+          transform: translateY(-1px);
         }
 
         .save-button:disabled {
           background: #9ca3af;
+          box-shadow: none;
+          transform: none;
           cursor: not-allowed;
         }
 
@@ -293,10 +345,6 @@ export default function UserProfile() {
           .profile-input,
           .profile-select {
             width: 100%;
-          }
-
-          .profile-actions {
-            flex-direction: column;
           }
         }
       `}</style>
