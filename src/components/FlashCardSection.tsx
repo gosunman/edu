@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { FlashCard } from '@/types';
 
 interface FlashCardSectionProps {

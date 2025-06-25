@@ -7,7 +7,6 @@ import UnitList from '@/components/UnitList';
 import FlashCardSection from '@/components/FlashCardSection';
 
 export default function Home() {
-  const [selectedUnit, setSelectedUnit] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [userScore, setUserScore] = useState(0);
@@ -34,6 +33,11 @@ export default function Home() {
   const getScorePercentage = () => {
     if (totalAttempts === 0) return 0;
     return Math.round((userScore / totalAttempts) * 100);
+  };
+
+  const handleSelectUnit = (unitId: string) => {
+    // 단원 선택 로직 (향후 구현)
+    console.log('Selected unit:', unitId);
   };
 
   return (
@@ -101,7 +105,7 @@ export default function Home() {
         </section>
 
         {/* Units Grid */}
-        <UnitList units={units} onSelectUnit={setSelectedUnit} />
+        <UnitList units={units} onSelectUnit={handleSelectUnit} />
 
         {/* Flash Card Section */}
         {!isSimulationMode && (
