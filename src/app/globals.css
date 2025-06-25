@@ -128,7 +128,7 @@ a {
   line-height: 1.5;
 }
 
-/* Stats Container */
+/* Stats Container - 가로 배치 유지 (모바일 포함) */
 .stats-container {
   display: flex;
   justify-content: space-between;
@@ -171,13 +171,14 @@ a {
   margin-bottom: 15px;
 }
 
-/* Modes Container */
+/* Modes Container - 가로 배치로 변경 */
 .modes-container {
   margin-bottom: 25px;
 }
 
-.modes-grid {
+.modes-grid-vertical {
   display: flex;
+  flex-direction: row;
   gap: 10px;
 }
 
@@ -356,8 +357,10 @@ a {
   color: #6C757D;
 }
 
+/* Card Controls - 가로 배치로 변경 */
 .card-controls {
   display: flex;
+  flex-direction: row;
   gap: 10px;
 }
 
@@ -424,12 +427,56 @@ a {
     padding: 15px;
   }
   
+  /* 통계 카드 - 모바일에서도 가로 배치 유지 */
   .stats-container {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 5px;
   }
   
-  .modes-grid {
-    flex-direction: column;
+  .stat-card {
+    padding: 10px;
+  }
+  
+  .stat-number {
+    font-size: 18px;
+  }
+  
+  .stat-label {
+    font-size: 10px;
+  }
+  
+  /* 학습 모드 - 모바일에서도 가로 배치 유지 */
+  .modes-grid-vertical {
+    flex-direction: row;
+    gap: 5px;
+  }
+  
+  .mode-card {
+    padding: 15px;
+  }
+  
+  .mode-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  
+  .mode-title {
+    font-size: 14px;
+  }
+  
+  .mode-description {
+    font-size: 10px;
+  }
+  
+  /* 카드 컨트롤 - 모바일에서도 가로 배치 유지 */
+  .card-controls {
+    flex-direction: row;
+    gap: 5px;
+  }
+  
+  .control-button {
+    padding: 12px;
+    font-size: 14px;
   }
   
   .unit-header {
@@ -439,9 +486,5 @@ a {
   
   .unit-progress {
     text-align: left;
-  }
-  
-  .card-controls {
-    flex-direction: column;
   }
 }

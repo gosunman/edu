@@ -65,7 +65,7 @@ export default function Home() {
           </p>
         </section>
 
-        {/* Quick Stats */}
+        {/* Quick Stats - 가로 배치 */}
         <section className="stats-container">
           <div className="stat-card">
             <div className="stat-number">{getScorePercentage()}%</div>
@@ -81,10 +81,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Learning Modes */}
+        {/* Learning Modes - 세로 배치 */}
         <section className="modes-container">
           <h2 className="section-title">학습 모드</h2>
-          <div className="modes-grid">
+          <div className="modes-grid-vertical">
             <button 
               className={`mode-card ${!isSimulationMode ? 'active' : ''}`}
               onClick={() => setIsSimulationMode(false)}
@@ -103,9 +103,6 @@ export default function Home() {
             </button>
           </div>
         </section>
-
-        {/* Units Grid */}
-        <UnitList units={units} onSelectUnit={handleSelectUnit} />
 
         {/* Flash Card Section */}
         {!isSimulationMode && (
@@ -131,6 +128,9 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        {/* Units Grid - 맨 아래로 이동 */}
+        <UnitList units={units} onSelectUnit={handleSelectUnit} />
       </main>
     </div>
   );
