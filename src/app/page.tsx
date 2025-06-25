@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { units } from '@/data/units';
 import { flashCards } from '@/data/flashCards';
 import UnitList from '@/components/UnitList';
@@ -13,21 +13,20 @@ import UnitSelector from '@/components/UnitSelector';
 import FlashCardStudy from '@/components/FlashCardStudy';
 import BottomNavigation from '@/components/BottomNavigation';
 import { AuthService } from '@/lib/auth';
-import { Unit } from '@/types';
+import { Unit, UserStats, Mode, ProgressUpdate } from '@/types';
 
 export default function Home() {
   const { data: session } = useSession();
   const router = useRouter();
-  const pathname = usePathname();
+  
+  // State
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [userScore, setUserScore] = useState(0);
-  const [totalAttempts, setTotalAttempts] = useState(0);
-  const [activeMode, setActiveMode] = useState<'main' | 'flashcard' | 'simulation' | 'units' | 'settings'>('main');
+  const [activeMode, setActiveMode] = useState<Mode>('main');
   const [showProfileSetup, setShowProfileSetup] = useState(false);
   const [showUnitSelector, setShowUnitSelector] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
-  const [userStats, setUserStats] = useState({
+  const [userStats, setUserStats] = useState<UserStats>({
     totalCorrectAnswers: 0,
     totalAttempts: 0,
     accuracy: 0,
@@ -35,20 +34,20 @@ export default function Home() {
     totalStudyTime: 0,
   });
 
-  // 사용자 통계 로드
+  // Effects
   useEffect(() => {
     if (session?.user?.id) {
       loadUserStats();
     }
   }, [session?.user?.id]);
 
-  // 프로필 설정 필요 여부 확인
   useEffect(() => {
     if (session?.user && !session.user.school) {
       setShowProfileSetup(true);
     }
   }, [session?.user]);
 
+  // Functions
   const loadUserStats = async () => {
     if (session?.user?.id) {
       const stats = await AuthService.getUserStats(session.user.id);
@@ -57,9 +56,7 @@ export default function Home() {
   };
 
   const handleAnswer = async (isCorrect: boolean) => {
-    setTotalAttempts(prev => prev + 1);
     if (isCorrect) {
-      setUserScore(prev => prev + 1);
       alert('정답! 🎉');
     } else {
       alert('틀렸어요 😅');
@@ -70,50 +67,18 @@ export default function Home() {
 
     // DB에 진행률 업데이트
     if (session?.user?.id) {
-      const currentUnit = units[0]; // 현재 선택된 단원 (임시로 첫 번째 단원)
+      const currentUnit = units[0];
       await AuthService.updateProgress({
         user_id: session.user.id,
         unit_id: currentUnit.id,
         correct_answers: isCorrect ? 1 : 0,
         total_attempts: 1,
       });
-
-      // 통계 새로고침
       await loadUserStats();
     }
   };
 
-  const toggleAnswer = () => {
-    setShowAnswer(!showAnswer);
-  };
-
-  const getScorePercentage = () => {
-    return userStats.accuracy;
-  };
-
-  const handleSelectUnit = (unitId: string) => {
-    // 단원 선택 로직 (향후 구현)
-    console.log('Selected unit:', unitId);
-  };
-
-  const handleProfileComplete = () => {
-    setShowProfileSetup(false);
-  };
-
-  const handleFlashCardClick = () => {
-    setShowUnitSelector(true);
-  };
-
-  const handleUnitSelect = (unit: Unit) => {
-    setSelectedUnit(unit);
-    setShowUnitSelector(false);
-  };
-
-  const handleFlashCardStudyClose = () => {
-    setSelectedUnit(null);
-  };
-
-  const handleModeClick = (mode: 'main' | 'flashcard' | 'simulation' | 'units' | 'settings') => {
+  const handleModeClick = (mode: Mode) => {
     setActiveMode(mode);
   };
 
@@ -121,27 +86,154 @@ export default function Home() {
     router.push('/settings');
   };
 
-  // 레벨 계산 함수들
-  const calculateCurrentLv = () => {
-    // 시험 범위 설정이 없으면 0 반환
-    return 0;
+  const handleUnitSelect = (unit: Unit) => {
+    setSelectedUnit(unit);
+    setShowUnitSelector(false);
   };
 
   const calculateTotalLv = () => {
-    // 전체 중 완료된 단원 수 계산 (progress가 100%인 단원)
-    const completedUnits = units.filter(unit => 
-      unit.type === 'main' && unit.progress >= 100
-    ).length;
-    
-    return completedUnits;
+    return units.filter(unit => unit.type === 'main' && unit.progress >= 100).length;
   };
 
-  const currentLv = calculateCurrentLv();
+  const currentLv = 0; // 시험 범위 설정이 없으면 0
   const totalLv = calculateTotalLv();
+
+  // Render functions
+  const renderMainContent = () => (
+    <>
+      <section className="welcome-section">
+        <h2 className="welcome-title">안녕하세요! 👋</h2>
+        <p className="welcome-text">오늘도 과학의 신비로운 세계를 탐험해볼까요?</p>
+      </section>
+
+      <section className="stats-container">
+        <div className="stat-card">
+          <div className="stat-number">{userStats.accuracy}%</div>
+          <div className="stat-label">정답률</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{userStats.totalAttempts}</div>
+          <div className="stat-label">학습 횟수</div>
+        </div>
+        <div className="stat-card clickable" onClick={() => handleModeClick('units')}>
+          <div className="stat-number">{units.filter(u => u.type === 'main').length}</div>
+          <div className="stat-label">학습 단원</div>
+        </div>
+      </section>
+
+      <section className="modes-container">
+        <h2 className="section-title">학습 모드</h2>
+        <div className="modes-grid-vertical">
+          <button className="mode-card" onClick={() => handleModeClick('flashcard')}>
+            <div className="mode-icon">📚</div>
+            <h3 className="mode-title">암기 카드</h3>
+            <p className="mode-description">단원별 핵심 개념 학습</p>
+          </button>
+          <button className="mode-card" onClick={() => handleModeClick('simulation')}>
+            <div className="mode-icon">🎮</div>
+            <h3 className="mode-title">3D 시뮬레이션</h3>
+            <p className="mode-description">직관적인 실험 체험</p>
+          </button>
+        </div>
+      </section>
+    </>
+  );
+
+  const renderFlashCardContent = () => (
+    <section className="flash-card-container">
+      <div className="page-header">
+        <div className="header-content">
+          <button className="back-button" onClick={() => handleModeClick('main')}>
+            <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>메인으로</span>
+          </button>
+          <h2 className="page-title">암기 카드</h2>
+        </div>
+        <div className="header-decoration">
+          <div className="decoration-dot"></div>
+          <div className="decoration-line"></div>
+        </div>
+      </div>
+      <FlashCardSection
+        flashCards={flashCards}
+        currentCardIndex={currentCardIndex}
+        showAnswer={showAnswer}
+        toggleAnswer={() => setShowAnswer(!showAnswer)}
+        handleAnswer={handleAnswer}
+      />
+    </section>
+  );
+
+  const renderSimulationContent = () => (
+    <section className="simulation-container">
+      <div className="page-header">
+        <div className="header-content">
+          <button className="back-button" onClick={() => handleModeClick('main')}>
+            <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>메인으로</span>
+          </button>
+          <h2 className="page-title">3D 시뮬레이션</h2>
+        </div>
+        <div className="header-decoration">
+          <div className="decoration-dot"></div>
+          <div className="decoration-line"></div>
+        </div>
+      </div>
+      <div className="simulation-placeholder">
+        <div className="simulation-icon">🎮</div>
+        <h3 className="simulation-text">3D 시뮬레이션 준비 중...</h3>
+        <p className="simulation-description">
+          곧 원자 구조, 전기 회로, 화학 반응 등을 3D로 체험할 수 있어요!
+        </p>
+      </div>
+    </section>
+  );
+
+  const renderUnitsContent = () => (
+    <section className="units-container">
+      <div className="page-header">
+        <div className="header-content">
+          <button className="back-button" onClick={() => handleModeClick('main')}>
+            <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>메인으로</span>
+          </button>
+          <h2 className="page-title">학습 단원</h2>
+        </div>
+        <div className="header-decoration">
+          <div className="decoration-dot"></div>
+          <div className="decoration-line"></div>
+        </div>
+      </div>
+      <UnitList 
+        units={units.filter(u => u.type === 'main')} 
+        onSelectUnit={(unitId) => console.log('Selected unit:', unitId)} 
+      />
+    </section>
+  );
+
+  const renderContent = () => {
+    switch (activeMode) {
+      case 'main':
+        return renderMainContent();
+      case 'flashcard':
+        return renderFlashCardContent();
+      case 'simulation':
+        return renderSimulationContent();
+      case 'units':
+        return renderUnitsContent();
+      default:
+        return renderMainContent();
+    }
+  };
 
   return (
     <div className="container">
-      {/* Header */}
       <header className="header">
         <div className="header-content">
           <div className="header-left">
@@ -156,151 +248,9 @@ export default function Home() {
       </header>
 
       <main className="main-content">
-        {/* Welcome Section - 메인 모드에서만 보임 */}
-        {activeMode === 'main' && (
-          <section className="welcome-section">
-            <h2 className="welcome-title">안녕하세요! 👋</h2>
-            <p className="welcome-text">
-              오늘도 과학의 신비로운 세계를 탐험해볼까요?
-            </p>
-          </section>
-        )}
-
-        {/* Quick Stats - 메인 모드에서만 보임 */}
-        {activeMode === 'main' && (
-          <section className="stats-container">
-            <div className="stat-card">
-              <div className="stat-number">{getScorePercentage()}%</div>
-              <div className="stat-label">정답률</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{userStats.totalAttempts}</div>
-              <div className="stat-label">학습 횟수</div>
-            </div>
-            <div
-              className="stat-card clickable"
-              onClick={() => handleModeClick('units')}
-            >
-              <div className="stat-number">{units.filter(u => u.type === 'main').length}</div>
-              <div className="stat-label">학습 단원</div>
-            </div>
-          </section>
-        )}
-
-        {/* Learning Modes - 메인 모드에서만 보임 */}
-        {activeMode === 'main' && (
-          <section className="modes-container">
-            <h2 className="section-title">학습 모드</h2>
-            <div className="modes-grid-vertical">
-              <button
-                className="mode-card"
-                onClick={() => handleModeClick('flashcard')}
-              >
-                <div className="mode-icon">📚</div>
-                <h3 className="mode-title">암기 카드</h3>
-                <p className="mode-description">단원별 핵심 개념 학습</p>
-              </button>
-              <button
-                className="mode-card"
-                onClick={() => handleModeClick('simulation')}
-              >
-                <div className="mode-icon">🎮</div>
-                <h3 className="mode-title">3D 시뮬레이션</h3>
-                <p className="mode-description">직관적인 실험 체험</p>
-              </button>
-            </div>
-          </section>
-        )}
-
-        {/* Flash Card Container */}
-        {activeMode === 'flashcard' && (
-          <section className="flash-card-container">
-            <div className="page-header">
-              <div className="header-content">
-                <button
-                  className="back-button"
-                  onClick={() => handleModeClick('main')}
-                >
-                  <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span>메인으로</span>
-                </button>
-                <h2 className="page-title">암기 카드</h2>
-              </div>
-              <div className="header-decoration">
-                <div className="decoration-dot"></div>
-                <div className="decoration-line"></div>
-              </div>
-            </div>
-            <FlashCardSection
-              flashCards={flashCards}
-              currentCardIndex={currentCardIndex}
-              showAnswer={showAnswer}
-              toggleAnswer={toggleAnswer}
-              handleAnswer={handleAnswer}
-            />
-          </section>
-        )}
-
-        {/* 3D Simulation Container */}
-        {activeMode === 'simulation' && (
-          <section className="simulation-container">
-            <div className="page-header">
-              <div className="header-content">
-                <button
-                  className="back-button"
-                  onClick={() => handleModeClick('main')}
-                >
-                  <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span>메인으로</span>
-                </button>
-                <h2 className="page-title">3D 시뮬레이션</h2>
-              </div>
-              <div className="header-decoration">
-                <div className="decoration-dot"></div>
-                <div className="decoration-line"></div>
-              </div>
-            </div>
-            <div className="simulation-placeholder">
-              <div className="simulation-icon">🎮</div>
-              <h3 className="simulation-text">3D 시뮬레이션 준비 중...</h3>
-              <p className="simulation-description">
-                곧 원자 구조, 전기 회로, 화학 반응 등을 3D로 체험할 수 있어요!
-              </p>
-            </div>
-          </section>
-        )}
-
-        {/* Units Container */}
-        {activeMode === 'units' && (
-          <section className="units-container">
-            <div className="page-header">
-              <div className="header-content">
-                <button
-                  className="back-button"
-                  onClick={() => handleModeClick('main')}
-                >
-                  <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span>메인으로</span>
-                </button>
-                <h2 className="page-title">학습 단원</h2>
-              </div>
-              <div className="header-decoration">
-                <div className="decoration-dot"></div>
-                <div className="decoration-line"></div>
-              </div>
-            </div>
-            <UnitList units={units.filter(u => u.type === 'main')} onSelectUnit={handleSelectUnit} />
-          </section>
-        )}
+        {renderContent()}
       </main>
 
-      {/* Bottom Navigation */}
       <BottomNavigation
         activeMode={activeMode}
         onModeChange={handleModeClick}
@@ -309,12 +259,10 @@ export default function Home() {
         totalLv={totalLv}
       />
 
-      {/* Profile Setup Modal */}
       {showProfileSetup && (
-        <ProfileSetup onComplete={handleProfileComplete} />
+        <ProfileSetup onComplete={() => setShowProfileSetup(false)} />
       )}
 
-      {/* Unit Selector Modal */}
       {showUnitSelector && (
         <UnitSelector
           onUnitSelect={handleUnitSelect}
@@ -322,24 +270,23 @@ export default function Home() {
         />
       )}
 
-      {/* Flash Card Study Modal */}
       {selectedUnit && (
         <FlashCardStudy
           selectedUnit={selectedUnit}
-          onClose={handleFlashCardStudyClose}
+          onClose={() => setSelectedUnit(null)}
         />
       )}
 
       <style jsx>{`
         .main-content {
-          padding-bottom: 100px; /* 하단 네비게이션 바 공간 */
+          padding-bottom: 100px;
         }
 
         .page-header {
           position: relative;
           margin-bottom: 32px;
           padding-bottom: 20px;
-          }
+        }
           
         .header-content {
           display: flex;

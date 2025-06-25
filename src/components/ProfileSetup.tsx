@@ -39,7 +39,7 @@ export default function ProfileSetup({ onComplete }: ProfileSetupProps) {
         onComplete();
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
+      // 에러 처리 (필요시 사용자에게 알림)
     } finally {
       setIsLoading(false);
     }

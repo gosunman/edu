@@ -17,8 +17,6 @@ export class AuthService {
     enrollment_year?: number;
   }): Promise<User | null> {
     try {
-      console.log('Attempting to upsert user:', userData);
-      
       const { data, error } = await supabase
         .from('users')
         .upsert({
@@ -35,19 +33,11 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Supabase error details:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        });
         return null;
       }
 
-      console.log('User upserted successfully:', data);
       return data;
     } catch (error) {
-      console.error('Error in upsertUser:', error);
       return null;
     }
   }
@@ -55,8 +45,6 @@ export class AuthService {
   // 사용자 정보 조회
   static async getUser(userId: string): Promise<User | null> {
     try {
-      console.log('Fetching user with ID:', userId);
-      
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -64,26 +52,16 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error fetching user:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        });
-        
         // 사용자가 존재하지 않는 경우, 기본 사용자 정보 반환
         if (error.code === 'PGRST116') {
-          console.log('User not found, returning null');
           return null;
         }
         
         return null;
       }
 
-      console.log('User fetched successfully:', data);
       return data;
     } catch (error) {
-      console.error('Error in getUser:', error);
       return null;
     }
   }
@@ -97,13 +75,11 @@ export class AuthService {
         .eq('user_id', userId);
 
       if (error) {
-        console.error('Error fetching user progress:', error);
         return [];
       }
 
       return data || [];
     } catch (error) {
-      console.error('Error in getUserProgress:', error);
       return [];
     }
   }
@@ -119,13 +95,11 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error fetching unit progress:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error in getUnitProgress:', error);
       return null;
     }
   }
@@ -150,13 +124,11 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error updating progress:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error in updateProgress:', error);
       return null;
     }
   }
@@ -181,13 +153,11 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error starting study session:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error in startStudySession:', error);
       return null;
     }
   }
@@ -213,13 +183,11 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error ending study session:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error in endStudySession:', error);
       return null;
     }
   }
@@ -250,7 +218,6 @@ export class AuthService {
         totalStudyTime,
       };
     } catch (error) {
-      console.error('Error in getUserStats:', error);
       return {
         totalCorrectAnswers: 0,
         totalAttempts: 0,
@@ -281,13 +248,11 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error updating user profile:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error('Error in updateUserProfile:', error);
       return null;
     }
   }

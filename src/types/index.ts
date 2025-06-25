@@ -19,4 +19,21 @@ export interface FlashCard {
   answer: string;
   unitId: string;
   difficulty: 'easy' | 'medium' | 'hard';
-} 
+}
+
+export interface UserStats {
+  totalCorrectAnswers: number;
+  totalAttempts: number;
+  accuracy: number;
+  totalSessions: number;
+  totalStudyTime: number;
+}
+
+export interface ProgressUpdate {
+  user_id: string;
+  unit_id: string;
+  correct_answers: number;
+  total_attempts: number;
+}
+
+export type Mode = 'main' | 'flashcard' | 'simulation' | 'units' | 'settings'; 

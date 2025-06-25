@@ -52,7 +52,7 @@ export default function UserProfile({ isEditing: externalIsEditing, onEditingCha
         }
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
+      // 에러 처리 (필요시 사용자에게 알림)
     } finally {
       setIsLoading(false);
     }
@@ -64,15 +64,6 @@ export default function UserProfile({ isEditing: externalIsEditing, onEditingCha
     setEnrollmentYear(session?.user?.enrollment_year || new Date().getFullYear());
     setAchievementGoal(session?.user?.achievement_goal || 'basic');
     const newEditingState = false;
-    if (onEditingChange) {
-      onEditingChange(newEditingState);
-    } else {
-      setInternalIsEditing(newEditingState);
-    }
-  };
-
-  const handleStartEditing = () => {
-    const newEditingState = true;
     if (onEditingChange) {
       onEditingChange(newEditingState);
     } else {

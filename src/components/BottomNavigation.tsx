@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 
 interface BottomNavigationProps {
   activeMode: 'main' | 'flashcard' | 'simulation' | 'units' | 'settings';
@@ -18,7 +17,6 @@ export default function BottomNavigation({
   currentLv,
   totalLv
 }: BottomNavigationProps) {
-  const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -20,8 +20,6 @@ export default function FlashCardStudy({ selectedUnit, onClose }: FlashCardStudy
   useEffect(() => {
     // 선택된 단원의 플래시카드 필터링
     const unitCards = flashCards.filter(card => card.unitId === selectedUnit.id);
-    console.log('Selected unit:', selectedUnit);
-    console.log('Filtered cards:', unitCards);
     setStudyCards(unitCards);
     setCurrentCardIndex(0);
     setShowAnswer(false);
@@ -33,7 +31,6 @@ export default function FlashCardStudy({ selectedUnit, onClose }: FlashCardStudy
   const currentCard = studyCards[currentCardIndex];
 
   const handleShowAnswer = () => {
-    console.log('Show answer clicked, current card:', currentCard);
     setShowAnswer(true);
   };
 
