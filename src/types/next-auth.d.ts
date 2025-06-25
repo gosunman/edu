@@ -7,6 +7,9 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      school?: string | null;
+      grade?: number | null;
+      enrollment_year?: number | null;
       stats?: {
         totalCorrectAnswers: number;
         totalAttempts: number;
@@ -22,11 +25,17 @@ declare module "next-auth" {
     name?: string | null;
     email?: string | null;
     image?: string | null;
+    school?: string | null;
+    grade?: number | null;
+    enrollment_year?: number | null;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     sub?: string;
+    school?: string | null;
+    grade?: number | null;
+    enrollment_year?: number | null;
   }
 } 

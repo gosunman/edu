@@ -12,6 +12,9 @@ export class AuthService {
     email: string;
     name: string;
     avatar_url?: string;
+    school?: string;
+    grade?: number;
+    enrollment_year?: number;
   }): Promise<User | null> {
     try {
       console.log('Attempting to upsert user:', userData);
@@ -23,6 +26,9 @@ export class AuthService {
           email: userData.email,
           name: userData.name,
           avatar_url: userData.avatar_url,
+          school: userData.school,
+          grade: userData.grade,
+          enrollment_year: userData.enrollment_year,
           updated_at: new Date().toISOString(),
         })
         .select()
@@ -49,6 +55,8 @@ export class AuthService {
   // 사용자 정보 조회
   static async getUser(userId: string): Promise<User | null> {
     try {
+      console.log('Fetching user with ID:', userId);
+      
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -56,10 +64,23 @@ export class AuthService {
         .single();
 
       if (error) {
-        console.error('Error fetching user:', error);
+        console.error('Error fetching user:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        
+        // 사용자가 존재하지 않는 경우, 기본 사용자 정보 반환
+        if (error.code === 'PGRST116') {
+          console.log('User not found, returning null');
+          return null;
+        }
+        
         return null;
       }
 
+      console.log('User fetched successfully:', data);
       return data;
     } catch (error) {
       console.error('Error in getUser:', error);
@@ -238,5 +259,47 @@ export class AuthService {
         totalStudyTime: 0,
       };
     }
+  }
+
+  // 사용자 정보 업데이트
+  static async updateUserProfile(userId: string, profileData: {
+    school?: string;
+    grade?: number;
+    enrollment_year?: number;
+  }): Promise<User | null> {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .update({
+          ...profileData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', userId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating user profile:', error);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error in updateUserProfile:', error);
+      return null;
+    }
+  }
+
+  // 현재 학년 계산 (입학년도 기준)
+  static calculateCurrentGrade(enrollmentYear: number): number {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // 1-12
+    
+    // 3월부터 새 학년으로 계산
+    const academicYear = currentMonth >= 3 ? currentYear : currentYear - 1;
+    const grade = academicYear - enrollmentYear + 1;
+    
+    // 중학교는 1-3학년까지만
+    return Math.min(Math.max(grade, 1), 3);
   }
 } 

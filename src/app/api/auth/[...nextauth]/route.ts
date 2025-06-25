@@ -36,12 +36,32 @@ const handler = NextAuth({
         // 세션에 사용자 ID 추가
         session.user.id = token.sub;
         
-        // Supabase에서 사용자 통계 가져오기
+        // 사용자 정보 가져오기
         try {
+          let user = await AuthService.getUser(token.sub);
+          
+          // 사용자가 존재하지 않으면 생성
+          if (!user) {
+            console.log('User not found, creating new user...');
+            user = await AuthService.upsertUser({
+              id: token.sub,
+              email: session.user.email!,
+              name: session.user.name!,
+              avatar_url: session.user.image || undefined,
+            });
+          }
+          
+          if (user) {
+            session.user.school = user.school;
+            session.user.grade = user.grade;
+            session.user.enrollment_year = user.enrollment_year;
+          }
+          
+          // 사용자 통계 가져오기
           const stats = await AuthService.getUserStats(token.sub);
           session.user.stats = stats;
         } catch (error) {
-          console.error('Error fetching user stats:', error);
+          console.error('Error fetching user data:', error);
         }
       }
       return session;
@@ -49,6 +69,9 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        token.school = user.school;
+        token.grade = user.grade;
+        token.enrollment_year = user.enrollment_year;
       }
       return token;
     },

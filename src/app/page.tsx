@@ -7,6 +7,8 @@ import { flashCards } from '@/data/flashCards';
 import UnitList from '@/components/UnitList';
 import FlashCardSection from '@/components/FlashCardSection';
 import AuthWrapper from '@/components/AuthWrapper';
+import ProfileSetup from '@/components/ProfileSetup';
+import UserProfile from '@/components/UserProfile';
 import { AuthService } from '@/lib/auth';
 
 export default function Home() {
@@ -16,6 +18,7 @@ export default function Home() {
   const [userScore, setUserScore] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
   const [isSimulationMode, setIsSimulationMode] = useState(false);
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
   const [userStats, setUserStats] = useState({
     totalCorrectAnswers: 0,
     totalAttempts: 0,
@@ -30,6 +33,13 @@ export default function Home() {
       loadUserStats();
     }
   }, [session?.user?.id]);
+
+  // 프로필 설정 필요 여부 확인
+  useEffect(() => {
+    if (session?.user && !session.user.school) {
+      setShowProfileSetup(true);
+    }
+  }, [session?.user]);
 
   const loadUserStats = async () => {
     if (session?.user?.id) {
@@ -78,6 +88,10 @@ export default function Home() {
     console.log('Selected unit:', unitId);
   };
 
+  const handleProfileComplete = () => {
+    setShowProfileSetup(false);
+  };
+
   return (
     <div className="container">
       {/* Header */}
@@ -102,6 +116,11 @@ export default function Home() {
             오늘도 과학의 신비로운 세계를 탐험해볼까요?
           </p>
         </section>
+
+        {/* User Profile Section */}
+        {session?.user && (
+          <UserProfile />
+        )}
 
         {/* Quick Stats - 가로 배치 */}
         <section className="stats-container">
@@ -170,6 +189,11 @@ export default function Home() {
         {/* Units Grid - 맨 아래로 이동 */}
         <UnitList units={units} onSelectUnit={handleSelectUnit} />
       </main>
+
+      {/* Profile Setup Modal */}
+      {showProfileSetup && (
+        <ProfileSetup onComplete={handleProfileComplete} />
+      )}
     </div>
   );
 }
