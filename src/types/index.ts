@@ -9,6 +9,8 @@ export interface Unit {
   completedCards: number;
   parentId?: string | null;
   type: 'main' | 'sub';
+  chapter: string;
+  subChapter: string;
 }
 
 export interface FlashCard {

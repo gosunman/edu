@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter, usePathname } from 'next/navigation';
 import { units } from '@/data/units';
 import { flashCards } from '@/data/flashCards';
 import UnitList from '@/components/UnitList';
@@ -10,16 +11,19 @@ import AuthWrapper from '@/components/AuthWrapper';
 import ProfileSetup from '@/components/ProfileSetup';
 import UnitSelector from '@/components/UnitSelector';
 import FlashCardStudy from '@/components/FlashCardStudy';
+import BottomNavigation from '@/components/BottomNavigation';
 import { AuthService } from '@/lib/auth';
 import { Unit } from '@/types';
 
 export default function Home() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const pathname = usePathname();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [userScore, setUserScore] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
-  const [activeMode, setActiveMode] = useState<'main' | 'flashcard' | 'simulation' | 'units'>('main');
+  const [activeMode, setActiveMode] = useState<'main' | 'flashcard' | 'simulation' | 'units' | 'settings'>('main');
   const [showProfileSetup, setShowProfileSetup] = useState(false);
   const [showUnitSelector, setShowUnitSelector] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
@@ -109,9 +113,31 @@ export default function Home() {
     setSelectedUnit(null);
   };
 
-  const handleModeClick = (mode: 'main' | 'flashcard' | 'simulation' | 'units') => {
+  const handleModeClick = (mode: 'main' | 'flashcard' | 'simulation' | 'units' | 'settings') => {
     setActiveMode(mode);
   };
+
+  const handleSettingClick = () => {
+    router.push('/settings');
+  };
+
+  // 레벨 계산 함수들
+  const calculateCurrentLv = () => {
+    // 시험 범위 설정이 없으면 0 반환
+    return 0;
+  };
+
+  const calculateTotalLv = () => {
+    // 전체 중 완료된 단원 수 계산 (progress가 100%인 단원)
+    const completedUnits = units.filter(unit => 
+      unit.type === 'main' && unit.progress >= 100
+    ).length;
+    
+    return completedUnits;
+  };
+
+  const currentLv = calculateCurrentLv();
+  const totalLv = calculateTotalLv();
 
   return (
     <div className="container">
@@ -274,6 +300,15 @@ export default function Home() {
         )}
       </main>
 
+      {/* Bottom Navigation */}
+      <BottomNavigation
+        activeMode={activeMode}
+        onModeChange={handleModeClick}
+        onSettingClick={handleSettingClick}
+        currentLv={currentLv}
+        totalLv={totalLv}
+      />
+
       {/* Profile Setup Modal */}
       {showProfileSetup && (
         <ProfileSetup onComplete={handleProfileComplete} />
@@ -296,6 +331,10 @@ export default function Home() {
       )}
 
       <style jsx>{`
+        .main-content {
+          padding-bottom: 100px; /* 하단 네비게이션 바 공간 */
+        }
+
         .page-header {
           position: relative;
           margin-bottom: 32px;
@@ -456,6 +495,10 @@ export default function Home() {
           .simulation-description {
             font-size: 16px;
           }
+
+          .main-content {
+            padding-bottom: 90px;
+          }
         }
 
         @media (max-width: 480px) {
@@ -485,6 +528,10 @@ export default function Home() {
           .simulation-container,
           .units-container {
             padding: 16px;
+          }
+
+          .main-content {
+            padding-bottom: 80px;
           }
         }
       `}</style>
