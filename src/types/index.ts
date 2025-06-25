@@ -7,6 +7,8 @@ export interface Unit {
   progress: number;
   totalCards: number;
   completedCards: number;
+  parentId?: string | null;
+  type: 'main' | 'sub';
 }
 
 export interface FlashCard {

@@ -1,44 +1,333 @@
 import { Unit } from '@/types';
 
 export const units: Unit[] = [
+  // 중학교 1학년 과학
   {
-    id: 'unit1',
+    id: 'unit1-1',
     title: '물질의 구성',
     grade: '중1',
     description: '원자, 분자, 원소의 이해',
     color: '#FF6B9D',
     progress: 75,
     totalCards: 20,
-    completedCards: 15
+    completedCards: 15,
+    parentId: null,
+    type: 'main'
   },
   {
-    id: 'unit2',
+    id: 'unit1-1-1',
+    title: '물질의 기본 성분',
+    grade: '중1',
+    description: '원자와 분자의 개념',
+    color: '#FF8AAD',
+    progress: 80,
+    totalCards: 8,
+    completedCards: 6,
+    parentId: 'unit1-1',
+    type: 'sub'
+  },
+  {
+    id: 'unit1-1-2',
+    title: '원소와 화합물',
+    grade: '중1',
+    description: '원소의 종류와 화합물의 성질',
+    color: '#FF6B9D',
+    progress: 70,
+    totalCards: 12,
+    completedCards: 9,
+    parentId: 'unit1-1',
+    type: 'sub'
+  },
+  {
+    id: 'unit1-2',
     title: '전기와 자기',
-    grade: '중2',
-    description: '전류, 전압, 자기장의 원리',
+    grade: '중1',
+    description: '전기 현상과 자기 현상',
     color: '#4ECDC4',
     progress: 45,
     totalCards: 25,
-    completedCards: 11
+    completedCards: 11,
+    parentId: null,
+    type: 'main'
   },
   {
-    id: 'unit3',
+    id: 'unit1-2-1',
+    title: '전기 현상',
+    grade: '중1',
+    description: '정전기와 전류',
+    color: '#6ED5CD',
+    progress: 50,
+    totalCards: 15,
+    completedCards: 7,
+    parentId: 'unit1-2',
+    type: 'sub'
+  },
+  {
+    id: 'unit1-2-2',
+    title: '자기 현상',
+    grade: '중1',
+    description: '자석과 자기장',
+    color: '#4ECDC4',
+    progress: 40,
+    totalCards: 10,
+    completedCards: 4,
+    parentId: 'unit1-2',
+    type: 'sub'
+  },
+  {
+    id: 'unit1-3',
+    title: '동물의 구조와 기능',
+    grade: '중1',
+    description: '동물의 몸 구조와 생명 활동',
+    color: '#96CEB4',
+    progress: 90,
+    totalCards: 18,
+    completedCards: 16,
+    parentId: null,
+    type: 'main'
+  },
+  {
+    id: 'unit1-3-1',
+    title: '동물의 구조',
+    grade: '중1',
+    description: '동물의 몸 구조와 기관',
+    color: '#A8D8C4',
+    progress: 95,
+    totalCards: 10,
+    completedCards: 9,
+    parentId: 'unit1-3',
+    type: 'sub'
+  },
+  {
+    id: 'unit1-3-2',
+    title: '동물의 기능',
+    grade: '중1',
+    description: '동물의 생명 활동',
+    color: '#96CEB4',
+    progress: 85,
+    totalCards: 8,
+    completedCards: 7,
+    parentId: 'unit1-3',
+    type: 'sub'
+  },
+
+  // 중학교 2학년 과학
+  {
+    id: 'unit2-1',
     title: '화학 반응',
-    grade: '중3',
+    grade: '중2',
     description: '산화환원, 중화반응',
     color: '#45B7D1',
     progress: 20,
     totalCards: 30,
-    completedCards: 6
+    completedCards: 6,
+    parentId: null,
+    type: 'main'
   },
   {
-    id: 'unit4',
+    id: 'unit2-1-1',
+    title: '산화환원 반응',
+    grade: '중2',
+    description: '산화와 환원의 개념',
+    color: '#5FC1DB',
+    progress: 25,
+    totalCards: 18,
+    completedCards: 4,
+    parentId: 'unit2-1',
+    type: 'sub'
+  },
+  {
+    id: 'unit2-1-2',
+    title: '중화 반응',
+    grade: '중2',
+    description: '산과 염기의 중화',
+    color: '#45B7D1',
+    progress: 15,
+    totalCards: 12,
+    completedCards: 2,
+    parentId: 'unit2-1',
+    type: 'sub'
+  },
+  {
+    id: 'unit2-2',
     title: '생태계',
     grade: '중2',
     description: '생물과 환경의 상호작용',
     color: '#96CEB4',
     progress: 90,
     totalCards: 18,
-    completedCards: 16
+    completedCards: 16,
+    parentId: null,
+    type: 'main'
+  },
+  {
+    id: 'unit2-2-1',
+    title: '생태계의 구성',
+    grade: '중2',
+    description: '생태계의 구성 요소',
+    color: '#A8D8C4',
+    progress: 95,
+    totalCards: 10,
+    completedCards: 9,
+    parentId: 'unit2-2',
+    type: 'sub'
+  },
+  {
+    id: 'unit2-2-2',
+    title: '생태계의 평형',
+    grade: '중2',
+    description: '생태계의 평형과 변화',
+    color: '#96CEB4',
+    progress: 85,
+    totalCards: 8,
+    completedCards: 7,
+    parentId: 'unit2-2',
+    type: 'sub'
+  },
+  {
+    id: 'unit2-3',
+    title: '지구와 우주',
+    grade: '중2',
+    description: '지구의 구조와 우주의 구성',
+    color: '#FFB347',
+    progress: 60,
+    totalCards: 22,
+    completedCards: 13,
+    parentId: null,
+    type: 'main'
+  },
+  {
+    id: 'unit2-3-1',
+    title: '지구의 구조',
+    grade: '중2',
+    description: '지구의 층상 구조',
+    color: '#FFC267',
+    progress: 65,
+    totalCards: 12,
+    completedCards: 8,
+    parentId: 'unit2-3',
+    type: 'sub'
+  },
+  {
+    id: 'unit2-3-2',
+    title: '우주의 구성',
+    grade: '중2',
+    description: '태양계와 은하',
+    color: '#FFB347',
+    progress: 55,
+    totalCards: 10,
+    completedCards: 5,
+    parentId: 'unit2-3',
+    type: 'sub'
+  },
+
+  // 중학교 3학년 과학
+  {
+    id: 'unit3-1',
+    title: '운동과 에너지',
+    grade: '중3',
+    description: '운동의 법칙과 에너지의 전환',
+    color: '#9B59B6',
+    progress: 30,
+    totalCards: 28,
+    completedCards: 8,
+    parentId: null,
+    type: 'main'
+  },
+  {
+    id: 'unit3-1-1',
+    title: '운동의 법칙',
+    grade: '중3',
+    description: '뉴턴의 운동 법칙',
+    color: '#A569BD',
+    progress: 35,
+    totalCards: 16,
+    completedCards: 5,
+    parentId: 'unit3-1',
+    type: 'sub'
+  },
+  {
+    id: 'unit3-1-2',
+    title: '에너지의 전환',
+    grade: '중3',
+    description: '에너지 보존과 전환',
+    color: '#9B59B6',
+    progress: 25,
+    totalCards: 12,
+    completedCards: 3,
+    parentId: 'unit3-1',
+    type: 'sub'
+  },
+  {
+    id: 'unit3-2',
+    title: '유전과 진화',
+    grade: '중3',
+    description: '유전의 법칙과 진화',
+    color: '#E74C3C',
+    progress: 70,
+    totalCards: 24,
+    completedCards: 17,
+    parentId: null,
+    type: 'main'
+  },
+  {
+    id: 'unit3-2-1',
+    title: '유전의 법칙',
+    grade: '중3',
+    description: '멘델의 유전 법칙',
+    color: '#EC7063',
+    progress: 75,
+    totalCards: 14,
+    completedCards: 10,
+    parentId: 'unit3-2',
+    type: 'sub'
+  },
+  {
+    id: 'unit3-2-2',
+    title: '진화',
+    grade: '중3',
+    description: '생물의 진화 과정',
+    color: '#E74C3C',
+    progress: 65,
+    totalCards: 10,
+    completedCards: 7,
+    parentId: 'unit3-2',
+    type: 'sub'
+  },
+  {
+    id: 'unit3-3',
+    title: '기후 변화',
+    grade: '중3',
+    description: '기후 변화와 환경 문제',
+    color: '#3498DB',
+    progress: 50,
+    totalCards: 20,
+    completedCards: 10,
+    parentId: null,
+    type: 'main'
+  },
+  {
+    id: 'unit3-3-1',
+    title: '기후 변화의 원인',
+    grade: '중3',
+    description: '기후 변화의 원인과 영향',
+    color: '#5DADE2',
+    progress: 55,
+    totalCards: 12,
+    completedCards: 6,
+    parentId: 'unit3-3',
+    type: 'sub'
+  },
+  {
+    id: 'unit3-3-2',
+    title: '환경 보호',
+    grade: '중3',
+    description: '환경 보호와 지속 가능한 발전',
+    color: '#3498DB',
+    progress: 45,
+    totalCards: 8,
+    completedCards: 4,
+    parentId: 'unit3-3',
+    type: 'sub'
   }
 ]; 
