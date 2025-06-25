@@ -1,20 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { units } from '@/data/units';
 import { flashCards } from '@/data/flashCards';
 import UnitList from '@/components/UnitList';
 import FlashCardSection from '@/components/FlashCardSection';
 import AuthWrapper from '@/components/AuthWrapper';
+import { AuthService } from '@/lib/auth';
 
 export default function Home() {
+  const { data: session } = useSession();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [userScore, setUserScore] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
   const [isSimulationMode, setIsSimulationMode] = useState(false);
+  const [userStats, setUserStats] = useState({
+    totalCorrectAnswers: 0,
+    totalAttempts: 0,
+    accuracy: 0,
+    totalSessions: 0,
+    totalStudyTime: 0,
+  });
 
-  const handleAnswer = (isCorrect: boolean) => {
+  // 사용자 통계 로드
+  useEffect(() => {
+    if (session?.user?.id) {
+      loadUserStats();
+    }
+  }, [session?.user?.id]);
+
+  const loadUserStats = async () => {
+    if (session?.user?.id) {
+      const stats = await AuthService.getUserStats(session.user.id);
+      setUserStats(stats);
+    }
+  };
+
+  const handleAnswer = async (isCorrect: boolean) => {
     setTotalAttempts(prev => prev + 1);
     if (isCorrect) {
       setUserScore(prev => prev + 1);
@@ -25,6 +49,20 @@ export default function Home() {
     
     setShowAnswer(false);
     setCurrentCardIndex(prev => (prev + 1) % flashCards.length);
+
+    // DB에 진행률 업데이트
+    if (session?.user?.id) {
+      const currentUnit = units[0]; // 현재 선택된 단원 (임시로 첫 번째 단원)
+      await AuthService.updateProgress({
+        user_id: session.user.id,
+        unit_id: currentUnit.id,
+        correct_answers: isCorrect ? 1 : 0,
+        total_attempts: 1,
+      });
+      
+      // 통계 새로고침
+      await loadUserStats();
+    }
   };
 
   const toggleAnswer = () => {
@@ -32,8 +70,7 @@ export default function Home() {
   };
 
   const getScorePercentage = () => {
-    if (totalAttempts === 0) return 0;
-    return Math.round((userScore / totalAttempts) * 100);
+    return userStats.accuracy;
   };
 
   const handleSelectUnit = (unitId: string) => {
@@ -73,7 +110,7 @@ export default function Home() {
             <div className="stat-label">정답률</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{totalAttempts}</div>
+            <div className="stat-number">{userStats.totalAttempts}</div>
             <div className="stat-label">학습 횟수</div>
           </div>
           <div className="stat-card">

@@ -1,6 +1,6 @@
-# 과학 학습실 🧪
+# 과학 학습실 - Next.js 교육 앱
 
-중학교 과학 교육을 위한 인터랙티브 학습 플랫폼입니다.
+중1,2,3학년 과학 교육을 위한 인터랙티브 학습 플랫폼입니다.
 
 ## ✨ 주요 기능
 
@@ -16,38 +16,39 @@
 ```bash
 git clone <repository-url>
 cd edu
-```
-
-### 2. 의존성 설치
-```bash
 npm install
 ```
 
-### 3. 환경 변수 설정
+### 2. 환경 변수 설정
 
-`.env.local` 파일을 생성하고 다음 내용을 추가하세요:
+`.env.local` 파일을 생성하고 다음 변수들을 설정하세요:
 
 ```env
-# Google OAuth
-GOOGLE_CLIENT_ID=your_google_client_id_here
-GOOGLE_CLIENT_SECRET=your_google_client_secret_here
-
-# NextAuth
-NEXTAUTH_SECRET=your_nextauth_secret_here
+# NextAuth Configuration
 NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret-here
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
-### 4. Google OAuth 설정
+### 3. Google OAuth 설정
 
-1. [Google Cloud Console](https://console.cloud.google.com/)에 접속
-2. 새 프로젝트 생성 또는 기존 프로젝트 선택
-3. **API 및 서비스** → **사용자 인증 정보**로 이동
-4. **사용자 인증 정보 만들기** → **OAuth 2.0 클라이언트 ID** 선택
-5. 애플리케이션 유형: **웹 애플리케이션** 선택
-6. 승인된 리디렉션 URI 추가:
-   - `http://localhost:3000/api/auth/callback/google` (개발용)
-   - `https://your-domain.com/api/auth/callback/google` (배포용)
-7. 생성된 클라이언트 ID와 시크릿을 `.env.local`에 입력
+1. [Google Cloud Console](https://console.cloud.google.com/)에서 새 프로젝트 생성
+2. OAuth 2.0 클라이언트 ID 생성
+3. 승인된 리디렉션 URI에 `http://localhost:3000/api/auth/callback/google` 추가
+4. 클라이언트 ID와 시크릿을 환경 변수에 설정
+
+### 4. Supabase 설정
+
+1. [Supabase](https://supabase.com/)에서 새 프로젝트 생성
+2. 프로젝트 URL과 anon key를 환경 변수에 설정
+3. SQL Editor에서 `supabase-schema.sql` 파일의 내용을 실행하여 데이터베이스 스키마 생성
 
 ### 5. 개발 서버 실행
 ```bash
@@ -58,10 +59,9 @@ npm run dev
 
 ## 🛠️ 사용 기술
 
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
+- **Framework**: Next.js 14, TypeScript, Tailwind CSS
 - **Authentication**: NextAuth.js
-- **Styling**: CSS3 (Custom)
+- **Database**: Supabase (PostgreSQL)
 - **Deployment**: Vercel
 
 ## 📁 프로젝트 구조
@@ -147,3 +147,23 @@ npm run generate-favicons  # Favicon 생성
 ## 📞 문의
 
 프로젝트에 대한 문의사항이 있으시면 이슈를 생성해 주세요.
+
+## 데이터베이스 스키마
+
+### Users 테이블
+- 사용자 기본 정보 (ID, 이메일, 이름, 프로필 이미지)
+
+### User Progress 테이블
+- 사용자별 단원 진행률
+- 정답 수, 시도 횟수, 마지막 학습 시간 등
+
+### Study Sessions 테이블
+- 학습 세션 기록
+- 세션 타입, 정답 수, 학습 시간 등
+
+## 주요 컴포넌트
+
+- `AuthWrapper`: 로그인/로그아웃 버튼
+- `UnitList`: 단원 목록 표시
+- `FlashCardSection`: 플래시카드 학습 섹션
+- `AuthService`: Supabase 데이터베이스 연동 서비스
