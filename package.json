@@ -6,11 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-favicons": "node scripts/generate-favicons.js && node scripts/generate-ico.js"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19",
+    "react-dom": "^19",
     "next": "15.3.4"
   },
   "devDependencies": {
@@ -18,8 +19,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "eslint": "^8",
     "eslint-config-next": "15.3.4",
-    "@eslint/eslintrc": "^3"
+    "sharp": "^0.33.0",
+    "png-to-ico": "^2.1.8"
   }
 }
