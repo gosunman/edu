@@ -143,12 +143,6 @@ export default function Home() {
     <section className="flash-card-container">
       <div className="page-header">
         <div className="header-content">
-          <button className="back-button" onClick={() => handleModeClick('main')}>
-            <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>메인으로</span>
-          </button>
           <h2 className="page-title">암기 카드</h2>
         </div>
         <div className="header-decoration">
@@ -170,12 +164,6 @@ export default function Home() {
     <section className="simulation-container">
       <div className="page-header">
         <div className="header-content">
-          <button className="back-button" onClick={() => handleModeClick('main')}>
-            <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>메인으로</span>
-          </button>
           <h2 className="page-title">3D 시뮬레이션</h2>
         </div>
         <div className="header-decoration">
@@ -197,12 +185,6 @@ export default function Home() {
     <section className="units-container">
       <div className="page-header">
         <div className="header-content">
-          <button className="back-button" onClick={() => handleModeClick('main')}>
-            <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>메인으로</span>
-          </button>
           <h2 className="page-title">학습 단원</h2>
         </div>
         <div className="header-decoration">

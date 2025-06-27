@@ -87,28 +87,59 @@ export default function SettingsPage() {
         <div className="setting-section">
           <label className="setting-label">시험 날짜</label>
           <div className="date-input-container">
-            <div className="date-input-type-selector">
+            <div className="date-input-wrapper">
+              <input
+                type="text"
+                value={examDate}
+                onChange={handleDateInputChange}
+                className="date-input"
+                placeholder="YYYY-MM-DD"
+                maxLength={10}
+              />
+              <input
+                type="date"
+                className="hidden-date-input"
+                onChange={(e) => setExamDate(e.target.value)}
+                value={examDate}
+              />
               <button
-                className={`date-type-button ${dateInputType === 'calendar' ? 'active' : ''}`}
-                onClick={() => setDateInputType('calendar')}
+                type="button"
+                className="calendar-button"
+                onClick={() => {
+                  const dateInput = document.querySelector('.hidden-date-input') as HTMLInputElement;
+                  if (dateInput) {
+                    dateInput.showPicker();
+                  }
+                }}
               >
-                📅 캘린더
-              </button>
-              <button
-                className={`date-type-button ${dateInputType === 'manual' ? 'active' : ''}`}
-                onClick={() => setDateInputType('manual')}
-              >
-                ✏️ 직접 입력
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
               </button>
             </div>
-            <input
-              type={dateInputType === 'calendar' ? 'date' : 'text'}
-              value={examDate}
-              onChange={handleDateInputChange}
-              className="setting-input"
-              placeholder={dateInputType === 'manual' ? 'YYYY-MM-DD' : '시험 날짜를 선택하세요'}
-              maxLength={dateInputType === 'manual' ? 10 : undefined}
-            />
+            <div className="date-actions">
+              <button
+                type="button"
+                className="save-date-button"
+                onClick={() => {
+                  // 날짜 저장 로직
+                  console.log('날짜 저장:', examDate);
+                }}
+                disabled={!examDate}
+              >
+                저장
+              </button>
+              <button
+                type="button"
+                className="delete-date-button"
+                onClick={() => {
+                  setExamDate('');
+                }}
+                disabled={!examDate}
+              >
+                삭제
+              </button>
+            </div>
           </div>
         </div>
 
@@ -153,7 +184,11 @@ export default function SettingsPage() {
               <div className="preview-item">
                 <span className="preview-label">시험 날짜:</span>
                 <span className="preview-value">
-                  {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미설정'}
+                  {examDate ? new Date(examDate).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                  }).replace(/\. /g, '/').replace(/\./g, '') : '미설정'}
                 </span>
               </div>
               <div className="preview-item">
@@ -283,28 +318,111 @@ export default function SettingsPage() {
           gap: 12px;
         }
 
-        .date-input-type-selector {
+        .date-input-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .date-input {
+          flex: 1;
+          padding: 12px 16px;
+          border: 2px solid #e5e7eb;
+          border-radius: 12px;
+          font-size: 14px;
+          transition: all 0.2s;
+          background: white;
+        }
+
+        .date-input:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .hidden-date-input {
+          position: absolute;
+          opacity: 0;
+          pointer-events: none;
+          width: 0;
+          height: 0;
+        }
+
+        .calendar-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+          border: 2px solid #e5e7eb;
+          border-radius: 12px;
+          background: white;
+          color: #6b7280;
+          cursor: pointer;
+          transition: all 0.2s;
+          flex-shrink: 0;
+        }
+
+        .calendar-button:hover {
+          border-color: #667eea;
+          color: #667eea;
+          background: rgba(102, 126, 234, 0.05);
+        }
+
+        .calendar-button svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        .date-actions {
           display: flex;
           gap: 8px;
         }
 
-        .date-type-button {
+        .save-date-button,
+        .delete-date-button {
           flex: 1;
-          padding: 8px 12px;
-          border: 2px solid #e5e7eb;
+          padding: 10px 16px;
+          border: none;
           border-radius: 8px;
-          background: white;
-          color: #6b7280;
-          font-size: 13px;
-          font-weight: 500;
+          font-size: 14px;
+          font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
         }
 
-        .date-type-button.active {
-          border-color: #667eea;
+        .save-date-button {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
+        }
+
+        .save-date-button:hover:not(:disabled) {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .save-date-button:disabled {
+          background: #e5e7eb;
+          color: #9ca3af;
+          cursor: not-allowed;
+        }
+
+        .delete-date-button {
+          background: #f3f4f6;
+          color: #6b7280;
+          border: 1px solid #e5e7eb;
+        }
+
+        .delete-date-button:hover:not(:disabled) {
+          background: #fee2e2;
+          color: #dc2626;
+          border-color: #fecaca;
+        }
+
+        .delete-date-button:disabled {
+          background: #f9fafb;
+          color: #d1d5db;
+          cursor: not-allowed;
         }
 
         .setting-hint {

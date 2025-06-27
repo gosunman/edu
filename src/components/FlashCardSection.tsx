@@ -19,7 +19,6 @@ export default function FlashCardSection({
 }: FlashCardSectionProps) {
   return (
     <div className="flash-card-container">
-      <h2 className="section-title">오늘의 암기 카드</h2>
       <div 
         className={`flash-card ${showAnswer ? 'flipped' : ''}`}
         onClick={toggleAnswer}
