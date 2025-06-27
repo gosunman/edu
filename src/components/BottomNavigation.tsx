@@ -45,9 +45,15 @@ export default function BottomNavigation({
 
         <div className="level-indicator">
           <div className="level-badge">
-            <span className="level-number">{currentLv}</span>
-            <span className="level-separator">/</span>
-            <span className="total-level">{totalLv}</span>
+            <div className="level-row">
+              <span className="level-label">Season Lv</span>
+              <span className="level-number">{currentLv}</span>
+            </div>
+            <div className="level-divider"></div>
+            <div className="level-row">
+              <span className="level-label">Total Lv</span>
+              <span className="total-level">{totalLv}</span>
+            </div>
           </div>
         </div>
 
@@ -71,11 +77,13 @@ export default function BottomNavigation({
           bottom: 0;
           left: 0;
           right: 0;
-          background: #ffffff;
-          border-top: 1px solid #e5e7eb;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-top: 1px solid rgba(255, 255, 255, 0.2);
           z-index: 100;
-          padding: 12px 0 24px 0;
-          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+          padding: 16px 0 32px 0;
+          box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
         }
 
         .nav-container {
@@ -84,148 +92,256 @@ export default function BottomNavigation({
           align-items: center;
           max-width: 400px;
           margin: 0 auto;
-          padding: 0 20px;
+          padding: 0 24px;
+          position: relative;
         }
 
         .nav-item {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 6px;
-          padding: 12px 16px;
+          gap: 8px;
+          padding: 16px 20px;
           border: none;
-          background: transparent;
+          background: rgba(255, 255, 255, 0.1);
           cursor: pointer;
-          transition: all 0.3s ease;
-          border-radius: 16px;
-          min-width: 80px;
-          color: #6b7280;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 20px;
+          min-width: 90px;
+          color: rgba(255, 255, 255, 0.8);
           position: relative;
+          overflow: hidden;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+        }
+
+        .nav-item::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(255, 255, 255, 0.95);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          border-radius: 20px;
+          z-index: -1;
         }
 
         .nav-item:hover {
           color: #667eea;
-          background: rgba(102, 126, 234, 0.05);
-          transform: translateY(-2px);
+          background: rgba(255, 255, 255, 0.15);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item:hover::before {
+          opacity: 0.1;
         }
 
         .nav-item.active {
           color: white;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-          transform: translateY(-4px);
+          background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+          box-shadow: 0 12px 40px rgba(79, 70, 229, 0.4);
+        }
+
+        .nav-item.active::before {
+          opacity: 1;
         }
 
         .nav-icon {
-          width: 24px;
-          height: 24px;
+          width: 28px;
+          height: 28px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.3s ease;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
         }
 
         .nav-icon svg {
-          width: 20px;
-          height: 20px;
+          width: 22px;
+          height: 22px;
           stroke: currentColor;
           stroke-width: 2;
+          transition: all 0.4s ease;
         }
 
         .nav-label {
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 600;
           line-height: 1;
           text-align: center;
-          transition: all 0.3s ease;
+          transition: all 0.4s ease;
+          letter-spacing: 0.5px;
         }
 
         .level-indicator {
           display: flex;
           align-items: center;
           justify-content: center;
+          position: relative;
         }
 
         .level-badge {
           display: flex;
+          flex-direction: column;
           align-items: center;
           gap: 4px;
-          padding: 8px 16px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          padding: 10px 16px;
+          background: rgba(248, 250, 252, 0.95);
           border-radius: 20px;
-          color: white;
+          color: #667eea;
           font-weight: 700;
-          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-          transition: all 0.3s ease;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: hidden;
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          min-width: 80px;
+        }
+
+        .level-badge::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+          transition: left 0.6s ease;
         }
 
         .level-badge:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+          transform: translateY(-4px) scale(1.05);
+          box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+          background: rgba(248, 250, 252, 1);
+        }
+
+        .level-badge:hover::before {
+          left: 100%;
+        }
+
+        .level-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          justify-content: center;
+        }
+
+        .level-label {
+          font-size: 10px;
+          opacity: 0.8;
+          font-weight: 600;
+          color: #667eea;
+          letter-spacing: 0.3px;
         }
 
         .level-number {
           font-size: 16px;
           font-weight: 800;
-        }
-
-        .level-separator {
-          font-size: 12px;
-          opacity: 0.8;
-          font-weight: 600;
+          color: #667eea;
         }
 
         .total-level {
           font-size: 14px;
-          opacity: 0.9;
+          opacity: 0.8;
           font-weight: 600;
+          color: #667eea;
+        }
+
+        .level-divider {
+          width: 50px;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.9), transparent);
+          margin: 2px 0;
         }
 
         @media (max-width: 480px) {
           .bottom-navigation {
-            padding: 10px 0 20px 0;
+            padding: 12px 0 28px 0;
           }
 
           .nav-container {
-            padding: 0 16px;
+            padding: 0 20px;
           }
 
           .nav-item {
-            padding: 10px 12px;
-            min-width: 70px;
+            padding: 14px 16px;
+            min-width: 80px;
           }
 
           .nav-icon {
-            width: 22px;
-            height: 22px;
+            width: 26px;
+            height: 26px;
           }
 
           .nav-icon svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
           }
 
           .nav-label {
-            font-size: 11px;
+            font-size: 12px;
           }
 
           .level-badge {
-            padding: 6px 12px;
+            padding: 10px 16px;
           }
 
           .level-number {
-            font-size: 14px;
+            font-size: 16px;
           }
 
           .total-level {
-            font-size: 12px;
+            font-size: 14px;
           }
         }
 
         /* iOS Safari safe area support */
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
           .bottom-navigation {
-            padding-bottom: calc(24px + env(safe-area-inset-bottom));
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+          }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+          .bottom-navigation {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+          }
+
+          .nav-item {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+          }
+
+          .nav-item:hover {
+            color: #818cf8;
+            background: rgba(255, 255, 255, 0.1);
+          }
+
+          .nav-item.active {
+            color: #818cf8;
+            background: rgba(255, 255, 255, 0.9);
+          }
+
+          .level-badge {
+            background: rgba(255, 255, 255, 0.9);
+            color: #818cf8;
+          }
+
+          .level-badge:hover {
+            background: rgba(255, 255, 255, 1);
+          }
+
+          .level-label,
+          .level-number,
+          .level-separator,
+          .total-level {
+            color: #818cf8;
           }
         }
       `}</style>

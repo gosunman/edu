@@ -53,16 +53,20 @@ a {
 /* Header */
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  padding: 12px 16px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
   color: white;
+  height: 70px;
+  display: flex;
+  align-items: center;
 }
 
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .header-left {
@@ -71,8 +75,8 @@ a {
 }
 
 .header-icon {
-  font-size: 32px;
-  margin-right: 15px;
+  font-size: 24px;
+  margin-right: 12px;
 }
 
 .header-text {
@@ -80,13 +84,13 @@ a {
 }
 
 .header-title {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .header-subtitle {
-  font-size: 14px;
+  font-size: 11px;
   opacity: 0.8;
 }
 
@@ -95,12 +99,17 @@ a {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-weight: 600;
-  font-size: 14px;
+  padding: 0;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 10px;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login-button:hover {
@@ -493,16 +502,16 @@ a {
   }
   
   .header-icon {
-    font-size: 24px;
+    font-size: 20px;
     margin-right: 10px;
   }
   
   .header-title {
-    font-size: 18px;
+    font-size: 16px;
   }
   
   .header-subtitle {
-    font-size: 12px;
+    font-size: 10px;
   }
   
   /* 통계 카드 - 모바일에서도 가로 배치 유지 */
