@@ -1,385 +1,418 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { units } from '@/data/units';
-import { Unit } from '@/types';
+import BottomNavigation from './BottomNavigation';
+import styles from './UnitSelector.module.css';
 
-interface UnitSelectorProps {
-  onUnitSelect: (unit: Unit) => void;
-  onClose: () => void;
+interface GroupedData {
+  grade: string;
+  majorChapters: {
+    majorChapter: string;
+    majorChapterTitle: string;
+    subChapters: {
+      subChapter: string;
+      subChapterTitle: string;
+      minorChapters: {
+        id: string;
+        minorChapter: string;
+        minorChapterTitle: string;
+        title: string;
+        description: string;
+        totalCards: number;
+        color: string;
+      }[];
+    }[];
+  }[];
 }
 
-export default function UnitSelector({ onUnitSelect, onClose }: UnitSelectorProps) {
-  const [selectedGrade, setSelectedGrade] = useState<string>('중1');
-  const [selectedMainUnit, setSelectedMainUnit] = useState<string | null>(null);
+export default function UnitSelector() {
+  const router = useRouter();
+  const [selectedCards, setSelectedCards] = useState<string[]>([]);
+  const [expandedGrades, setExpandedGrades] = useState<Set<string>>(new Set(['중1']));
+  const [expandedMajorChapters, setExpandedMajorChapters] = useState<Set<string>>(new Set());
+  const [expandedSubChapters, setExpandedSubChapters] = useState<Set<string>>(new Set());
 
-  // 대단원들만 필터링 (type: 'main')
-  const mainUnits = units.filter(unit => unit.type === 'main' && unit.grade === selectedGrade);
-  
-  // 선택된 대단원의 소단원들 필터링
-  const subUnits = selectedMainUnit 
-    ? units.filter(unit => unit.parentId === selectedMainUnit)
-    : [];
+  // 데이터를 4단계로 그룹핑: 학년 → 대단원 → 중단원 → 소단원
+  const groupedData: GroupedData[] = units.reduce((acc, unit) => {
+    const gradeIndex = acc.findIndex(g => g.grade === unit.grade);
+    if (gradeIndex === -1) {
+      acc.push({
+        grade: unit.grade,
+        majorChapters: [{
+          majorChapter: unit.majorChapter,
+          majorChapterTitle: unit.majorChapterTitle,
+          subChapters: [{
+            subChapter: unit.subChapter,
+            subChapterTitle: unit.subChapterTitle,
+            minorChapters: [{
+              id: unit.id,
+              minorChapter: unit.minorChapter,
+              minorChapterTitle: unit.minorChapterTitle,
+              title: unit.title,
+              description: unit.description,
+              totalCards: unit.totalCards,
+              color: unit.color
+            }]
+          }]
+        }]
+      });
+    } else {
+      const majorChapterIndex = acc[gradeIndex].majorChapters.findIndex(m => m.majorChapter === unit.majorChapter);
+      if (majorChapterIndex === -1) {
+        acc[gradeIndex].majorChapters.push({
+          majorChapter: unit.majorChapter,
+          majorChapterTitle: unit.majorChapterTitle,
+          subChapters: [{
+            subChapter: unit.subChapter,
+            subChapterTitle: unit.subChapterTitle,
+            minorChapters: [{
+              id: unit.id,
+              minorChapter: unit.minorChapter,
+              minorChapterTitle: unit.minorChapterTitle,
+              title: unit.title,
+              description: unit.description,
+              totalCards: unit.totalCards,
+              color: unit.color
+            }]
+          }]
+        });
+      } else {
+        const subChapterIndex = acc[gradeIndex].majorChapters[majorChapterIndex].subChapters.findIndex(s => s.subChapter === unit.subChapter);
+        if (subChapterIndex === -1) {
+          acc[gradeIndex].majorChapters[majorChapterIndex].subChapters.push({
+            subChapter: unit.subChapter,
+            subChapterTitle: unit.subChapterTitle,
+            minorChapters: [{
+              id: unit.id,
+              minorChapter: unit.minorChapter,
+              minorChapterTitle: unit.minorChapterTitle,
+              title: unit.title,
+              description: unit.description,
+              totalCards: unit.totalCards,
+              color: unit.color
+            }]
+          });
+        } else {
+          acc[gradeIndex].majorChapters[majorChapterIndex].subChapters[subChapterIndex].minorChapters.push({
+            id: unit.id,
+            minorChapter: unit.minorChapter,
+            minorChapterTitle: unit.minorChapterTitle,
+            title: unit.title,
+            description: unit.description,
+            totalCards: unit.totalCards,
+            color: unit.color
+          });
+        }
+      }
+    }
+    return acc;
+  }, [] as GroupedData[]);
 
-  const grades = ['중1', '중2', '중3'];
+  const handleGradeToggle = (grade: string) => {
+    setExpandedGrades(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(grade)) {
+        newSet.delete(grade);
+      } else {
+        newSet.add(grade);
+      }
+      return newSet;
+    });
+  };
+
+  const handleMajorChapterToggle = (majorChapterKey: string) => {
+    setExpandedMajorChapters(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(majorChapterKey)) {
+        newSet.delete(majorChapterKey);
+      } else {
+        newSet.add(majorChapterKey);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSubChapterToggle = (subChapterKey: string) => {
+    setExpandedSubChapters(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(subChapterKey)) {
+        newSet.delete(subChapterKey);
+      } else {
+        newSet.add(subChapterKey);
+      }
+      return newSet;
+    });
+  };
+
+  const handleCardToggle = (cardId: string) => {
+    setSelectedCards(prev => 
+      prev.includes(cardId) 
+        ? prev.filter(id => id !== cardId)
+        : [...prev, cardId]
+    );
+  };
+
+  const handleGradeSelect = (grade: string, cards: string[]) => {
+    const allCardIds = cards;
+    const isAllSelected = allCardIds.every(id => selectedCards.includes(id));
+    
+    if (isAllSelected) {
+      setSelectedCards(prev => prev.filter(id => !allCardIds.includes(id)));
+    } else {
+      setSelectedCards(prev => {
+        const newSelection = [...prev];
+        allCardIds.forEach(id => {
+          if (!newSelection.includes(id)) {
+            newSelection.push(id);
+          }
+        });
+        return newSelection;
+      });
+    }
+  };
+
+  const handleMajorChapterSelect = (majorChapter: string, cards: string[]) => {
+    const allCardIds = cards;
+    const isAllSelected = allCardIds.every(id => selectedCards.includes(id));
+    
+    if (isAllSelected) {
+      setSelectedCards(prev => prev.filter(id => !allCardIds.includes(id)));
+    } else {
+      setSelectedCards(prev => {
+        const newSelection = [...prev];
+        allCardIds.forEach(id => {
+          if (!newSelection.includes(id)) {
+            newSelection.push(id);
+          }
+        });
+        return newSelection;
+      });
+    }
+  };
+
+  const handleSubChapterSelect = (subChapter: string, cards: string[]) => {
+    const allCardIds = cards;
+    const isAllSelected = allCardIds.every(id => selectedCards.includes(id));
+    
+    if (isAllSelected) {
+      setSelectedCards(prev => prev.filter(id => !allCardIds.includes(id)));
+    } else {
+      setSelectedCards(prev => {
+        const newSelection = [...prev];
+        allCardIds.forEach(id => {
+          if (!newSelection.includes(id)) {
+            newSelection.push(id);
+          }
+        });
+        return newSelection;
+      });
+    }
+  };
+
+  const handleConfirm = () => {
+    if (selectedCards.length > 0) {
+      console.log('Selected cards:', selectedCards);
+      router.push('/flashcard');
+    }
+  };
+
+  const handleCancel = () => {
+    router.push('/');
+  };
+
+  const canConfirm = selectedCards.length > 0;
 
   return (
-    <div className="unit-selector-overlay" onClick={onClose}>
-      <div className="unit-selector-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="unit-selector-header">
-          <h2 className="unit-selector-title">학습할 단원을 선택하세요</h2>
-          <button onClick={onClose} className="unit-selector-close">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div className="unit-selector-content">
-          {/* 학년 선택 */}
-          <div className="grade-selector">
-            <h3 className="grade-title">학년 선택</h3>
-            <div className="grade-buttons">
-              {grades.map(grade => (
-                <button
-                  key={grade}
-                  onClick={() => {
-                    setSelectedGrade(grade);
-                    setSelectedMainUnit(null);
-                  }}
-                  className={`grade-button ${selectedGrade === grade ? 'active' : ''}`}
-                >
-                  {grade}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 대단원 선택 */}
-          <div className="main-unit-section">
-            <h3 className="section-title">대단원 선택</h3>
-            <div className="main-unit-grid">
-              {mainUnits.map(unit => (
-                <button
-                  key={unit.id}
-                  onClick={() => setSelectedMainUnit(unit.id)}
-                  className={`main-unit-card ${selectedMainUnit === unit.id ? 'selected' : ''}`}
-                >
-                  <div className="unit-card-header">
-                    <div className="unit-color" style={{ backgroundColor: unit.color }}></div>
-                    <div className="unit-info">
-                      <h4 className="unit-title">{unit.title}</h4>
-                      <p className="unit-description">{unit.description}</p>
-                    </div>
-                  </div>
-                  <div className="unit-progress">
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill" 
-                        style={{ 
-                          width: `${unit.progress}%`,
-                          backgroundColor: unit.color 
-                        }}
-                      ></div>
-                    </div>
-                    <span className="progress-text">{unit.completedCards}/{unit.totalCards} 완료</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 소단원 선택 */}
-          {selectedMainUnit && subUnits.length > 0 && (
-            <div className="sub-unit-section">
-              <h3 className="section-title">소단원 선택</h3>
-              <div className="sub-unit-grid">
-                {subUnits.map(unit => (
-                  <button
-                    key={unit.id}
-                    onClick={() => onUnitSelect(unit)}
-                    className="sub-unit-card"
-                  >
-                    <div className="unit-card-header">
-                      <div className="unit-color" style={{ backgroundColor: unit.color }}></div>
-                      <div className="unit-info">
-                        <h4 className="unit-title">{unit.title}</h4>
-                        <p className="unit-description">{unit.description}</p>
-                      </div>
-                    </div>
-                    <div className="unit-progress">
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ 
-                            width: `${unit.progress}%`,
-                            backgroundColor: unit.color 
-                          }}
-                        ></div>
-                      </div>
-                      <span className="progress-text">{unit.completedCards}/{unit.totalCards} 완료</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <style jsx>{`
-          .unit-selector-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-          }
-
-          .unit-selector-modal {
-            background: white;
-            border-radius: 20px;
-            max-width: 800px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-          }
-
-          .unit-selector-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 24px 0 24px;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 16px;
-          }
-
-          .unit-selector-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1f2937;
-            margin: 0;
-          }
-
-          .unit-selector-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 6px;
-            color: #6b7280;
-            transition: all 0.2s;
-          }
-
-          .unit-selector-close:hover {
-            background: #f3f4f6;
-            color: #374151;
-          }
-
-          .unit-selector-close svg {
-            width: 20px;
-            height: 20px;
-          }
-
-          .unit-selector-content {
-            padding: 24px;
-          }
-
-          .grade-selector {
-            margin-bottom: 32px;
-          }
-
-          .grade-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #374151;
-            margin: 0 0 16px 0;
-          }
-
-          .grade-buttons {
-            display: flex;
-            gap: 12px;
-          }
-
-          .grade-button {
-            padding: 10px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            background: white;
-            color: #6b7280;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-          }
-
-          .grade-button:hover {
-            border-color: #667eea;
-            color: #667eea;
-          }
-
-          .grade-button.active {
-            border-color: #667eea;
-            background: #667eea;
-            color: white;
-          }
-
-          .main-unit-section {
-            margin-bottom: 32px;
-          }
-
-          .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #374151;
-            margin: 0 0 16px 0;
-          }
-
-          .main-unit-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 16px;
-          }
-
-          .main-unit-card {
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-          }
-
-          .main-unit-card:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
-          }
-
-          .main-unit-card.selected {
-            border-color: #667eea;
-            background: #f8fafc;
-          }
-
-          .unit-card-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 12px;
-          }
-
-          .unit-color {
-            width: 8px;
-            height: 40px;
-            border-radius: 4px;
-            flex-shrink: 0;
-          }
-
-          .unit-info {
-            flex: 1;
-          }
-
-          .unit-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1f2937;
-            margin: 0 0 4px 0;
-          }
-
-          .unit-description {
-            font-size: 12px;
-            color: #6b7280;
-            margin: 0;
-            line-height: 1.4;
-          }
-
-          .unit-progress {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          }
-
-          .progress-bar {
-            flex: 1;
-            height: 6px;
-            background: #e5e7eb;
-            border-radius: 3px;
-            overflow: hidden;
-          }
-
-          .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.3s ease;
-          }
-
-          .progress-text {
-            font-size: 11px;
-            color: #6b7280;
-            white-space: nowrap;
-          }
-
-          .sub-unit-section {
-            margin-top: 24px;
-          }
-
-          .sub-unit-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 12px;
-          }
-
-          .sub-unit-card {
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 12px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-          }
-
-          .sub-unit-card:hover {
-            border-color: #667eea;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
-          }
-
-          @media (max-width: 640px) {
-            .unit-selector-overlay {
-              padding: 16px;
-            }
-
-            .unit-selector-modal {
-              border-radius: 16px;
-            }
-
-            .unit-selector-header {
-              padding: 20px 20px 0 20px;
-            }
-
-            .unit-selector-content {
-              padding: 20px;
-            }
-
-            .grade-buttons {
-              flex-direction: column;
-            }
-
-            .main-unit-grid,
-            .sub-unit-grid {
-              grid-template-columns: 1fr;
-            }
-          }
-        `}</style>
+    <div className={styles.unitSelector}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>시험 범위 선택</h1>
+        <p className={styles.subtitle}>학습할 단원을 선택하세요</p>
       </div>
+
+      <div className={styles.hierarchicalSelector}>
+        <div className={styles.selectionInfo}>
+          <h3 className={styles.selectionTitle}>단원 선택</h3>
+          <p className={styles.selectionCount}>
+            {selectedCards.length}개 선택됨
+          </p>
+        </div>
+
+        {groupedData.map(gradeData => {
+          const isGradeExpanded = expandedGrades.has(gradeData.grade);
+          const gradeCardIds = gradeData.majorChapters.flatMap(major => 
+            major.subChapters.flatMap(sub => sub.minorChapters.map(minor => minor.id))
+          );
+          const isGradeSelected = gradeCardIds.every(id => selectedCards.includes(id));
+          const isGradePartiallySelected = gradeCardIds.some(id => selectedCards.includes(id)) && !isGradeSelected;
+
+          return (
+            <div key={gradeData.grade} className={styles.gradeGroup}>
+              <button
+                onClick={() => handleGradeToggle(gradeData.grade)}
+                className={`${styles.gradeHeader} ${isGradeExpanded ? styles.expanded : ''}`}
+              >
+                <div className={styles.gradeInfo}>
+                  <div className={styles.gradeTitle}>{gradeData.grade}학년</div>
+                </div>
+                <div className={styles.gradeActions}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleGradeSelect(gradeData.grade, gradeCardIds);
+                    }}
+                    className={`${styles.selectButton} ${
+                      isGradeSelected ? styles.selected : 
+                      isGradePartiallySelected ? styles.partiallySelected : ''
+                    }`}
+                  >
+                    {isGradeSelected ? '전체 해제' : '전체 선택'}
+                  </button>
+                  <svg className={styles.expandIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </button>
+
+              {isGradeExpanded && (
+                <div className={styles.majorChapterList}>
+                  {gradeData.majorChapters.map(majorChapterData => {
+                    const majorChapterKey = `${gradeData.grade}-${majorChapterData.majorChapter}`;
+                    const isMajorChapterExpanded = expandedMajorChapters.has(majorChapterKey);
+                    const majorChapterCardIds = majorChapterData.subChapters.flatMap(sub => sub.minorChapters.map(minor => minor.id));
+                    const isMajorChapterSelected = majorChapterCardIds.every(id => selectedCards.includes(id));
+                    const isMajorChapterPartiallySelected = majorChapterCardIds.some(id => selectedCards.includes(id)) && !isMajorChapterSelected;
+
+                    return (
+                      <div key={majorChapterKey} className={styles.mainUnitGroup}>
+                        <button
+                          onClick={() => handleMajorChapterToggle(majorChapterKey)}
+                          className={`${styles.mainUnitHeader} ${isMajorChapterExpanded ? styles.expanded : ''}`}
+                        >
+                          <div className={styles.mainUnitInfo}>
+                            <div className={styles.chapterId}>{majorChapterData.majorChapter}</div>
+                            <div className={styles.mainUnitTitle}>{majorChapterData.majorChapterTitle}</div>
+                          </div>
+                          <div className={styles.mainUnitActions}>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMajorChapterSelect(majorChapterData.majorChapter, majorChapterCardIds);
+                              }}
+                              className={`${styles.selectButton} ${
+                                isMajorChapterSelected ? styles.selected : 
+                                isMajorChapterPartiallySelected ? styles.partiallySelected : ''
+                              }`}
+                            >
+                              {isMajorChapterSelected ? '전체 해제' : '전체 선택'}
+                            </button>
+                            <svg className={styles.expandIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </button>
+
+                        {isMajorChapterExpanded && (
+                          <div className={styles.subUnitList}>
+                            {majorChapterData.subChapters.map(subChapterData => {
+                              const subChapterKey = `${majorChapterKey}-${subChapterData.subChapter}`;
+                              const isSubChapterExpanded = expandedSubChapters.has(subChapterKey);
+                              const subChapterCardIds = subChapterData.minorChapters.map(minor => minor.id);
+                              const isSubChapterSelected = subChapterCardIds.every(id => selectedCards.includes(id));
+                              const isSubChapterPartiallySelected = subChapterCardIds.some(id => selectedCards.includes(id)) && !isSubChapterSelected;
+
+                              return (
+                                <div key={subChapterKey} className={styles.subUnitGroup}>
+                                  <button
+                                    onClick={() => handleSubChapterToggle(subChapterKey)}
+                                    className={`${styles.subUnitHeader} ${isSubChapterExpanded ? styles.expanded : ''}`}
+                                  >
+                                    <div className={styles.subUnitInfo}>
+                                      <div className={styles.subUnitId}>{majorChapterData.majorChapter}-{subChapterData.subChapter}</div>
+                                      <div className={styles.subUnitTitle}>{subChapterData.subChapterTitle}</div>
+                                    </div>
+                                    <div className={styles.subUnitActions}>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleSubChapterSelect(subChapterData.subChapter, subChapterCardIds);
+                                        }}
+                                        className={`${styles.selectButton} ${
+                                          isSubChapterSelected ? styles.selected : 
+                                          isSubChapterPartiallySelected ? styles.partiallySelected : ''
+                                        }`}
+                                      >
+                                        {isSubChapterSelected ? '전체 해제' : '전체 선택'}
+                                      </button>
+                                      <svg className={styles.expandIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                      </svg>
+                                    </div>
+                                  </button>
+
+                                  {isSubChapterExpanded && (
+                                    <div className={styles.cardList}>
+                                      {subChapterData.minorChapters.map(minorChapter => (
+                                        <button
+                                          key={minorChapter.id}
+                                          onClick={() => handleCardToggle(minorChapter.id)}
+                                          className={`${styles.cardButton} ${selectedCards.includes(minorChapter.id) ? styles.selected : ''}`}
+                                        >
+                                          <div className={styles.cardHeader}>
+                                            <div className={styles.cardId}>{majorChapterData.majorChapter}-{subChapterData.subChapter}-{minorChapter.minorChapter}</div>
+                                            {selectedCards.includes(minorChapter.id) && (
+                                              <div className={styles.cardCheck}>
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className={styles.cardTitle}>{minorChapter.minorChapterTitle}</div>
+                                          <div className={styles.cardDescription}>{minorChapter.description}</div>
+                                          <div className={styles.cardCount}>{minorChapter.totalCards}개 카드</div>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className={styles.actions}>
+        <button onClick={handleCancel} className={styles.cancelButton}>
+          취소
+        </button>
+        <button 
+          onClick={handleConfirm} 
+          className={`${styles.confirmButton} ${canConfirm ? styles.active : ''}`}
+          disabled={!canConfirm}
+        >
+          시작하기 ({selectedCards.length})
+        </button>
+      </div>
+
+      <BottomNavigation 
+        activeMode="units"
+        onModeChange={(mode) => {
+          if (mode === 'main') router.push('/');
+        }}
+        onSettingClick={() => {}}
+        currentLv={0}
+        totalLv={0}
+      />
     </div>
   );
 } 

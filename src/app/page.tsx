@@ -193,8 +193,11 @@ export default function Home() {
         </div>
       </div>
       <UnitList 
-        units={units.filter(u => u.type === 'main')} 
-        onSelectUnit={(unitId) => console.log('Selected unit:', unitId)} 
+        onUnitSelect={(unit) => {
+          console.log('Selected unit:', unit);
+          setSelectedUnit(unit);
+        }}
+        selectedUnits={selectedUnit ? [selectedUnit.id] : []}
       />
     </section>
   );
@@ -233,23 +236,8 @@ export default function Home() {
         {renderContent()}
       </main>
 
-      <BottomNavigation
-        activeMode={activeMode}
-        onModeChange={handleModeClick}
-        onSettingClick={handleSettingClick}
-        currentLv={currentLv}
-        totalLv={totalLv}
-      />
-
       {showProfileSetup && (
         <ProfileSetup onComplete={() => setShowProfileSetup(false)} />
-      )}
-
-      {showUnitSelector && (
-        <UnitSelector
-          onUnitSelect={handleUnitSelect}
-          onClose={() => setShowUnitSelector(false)}
-        />
       )}
 
       {selectedUnit && (
@@ -258,6 +246,14 @@ export default function Home() {
           onClose={() => setSelectedUnit(null)}
         />
       )}
+
+      <BottomNavigation
+        activeMode={activeMode}
+        onModeChange={handleModeClick}
+        onSettingClick={handleSettingClick}
+        currentLv={currentLv}
+        totalLv={totalLv}
+      />
 
       <style jsx>{`
         .main-content {

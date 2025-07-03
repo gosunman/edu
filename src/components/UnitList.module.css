@@ -1,0 +1,249 @@
+.unitList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.unitCard {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 2px solid #f3f4f6;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.unitCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #667eea;
+}
+
+.unitCard.selected {
+  border-color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+}
+
+.unitHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.unitInfo {
+  flex: 1;
+}
+
+.unitNumber {
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 4px;
+}
+
+.unitTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.unitDescription {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.unitProgress {
+  margin-top: 16px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.unitStats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  display: block;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.unitColor {
+  width: 4px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 16px 0 0 16px;
+}
+
+.unitColor.main {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.unitColor.sub {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.unitColor.card {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.selectionIndicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.unitCard.selected .selectionIndicator {
+  opacity: 1;
+}
+
+.selectionIndicator svg {
+  width: 14px;
+  height: 14px;
+}
+
+.gradeSection {
+  margin-bottom: 32px;
+}
+
+.gradeTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 16px 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.mainUnitGroup {
+  margin-bottom: 24px;
+}
+
+.mainUnitHeader {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 12px 20px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.mainUnitTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.subUnitGroup {
+  margin-left: 20px;
+  margin-bottom: 16px;
+}
+
+.subUnitHeader {
+  background: #f9fafb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #f3f4f6;
+}
+
+.subUnitTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-left: 20px;
+}
+
+@media (max-width: 768px) {
+  .unitList {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+
+  .subUnitGroup {
+    margin-left: 0;
+  }
+
+  .unitCard {
+    padding: 16px;
+  }
+
+  .unitTitle {
+    font-size: 16px;
+  }
+
+  .unitDescription {
+    font-size: 13px;
+  }
+} 

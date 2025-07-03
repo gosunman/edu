@@ -1,0 +1,616 @@
+.settingsPage {
+  min-height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.settingsHeader {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 24px;
+  flex-shrink: 0;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.backIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.settingsContent {
+  flex: 1;
+  padding: 24px;
+  padding-bottom: 100px;
+}
+
+.settingSection {
+  margin-bottom: 32px;
+}
+
+.settingLabel {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.settingInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: all 0.2s;
+  background: white;
+}
+
+.settingInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.dateInputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dateInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dateInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: all 0.2s;
+  background: white;
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.hiddenDateInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.calendarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.calendarButton:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.calendarButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.dateActions {
+  display: flex;
+  gap: 8px;
+}
+
+.saveDateButton,
+.deleteDateButton {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.saveDateButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.saveDateButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.saveDateButton:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.deleteDateButton {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.deleteDateButton:hover:not(:disabled) {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.deleteDateButton:disabled {
+  background: #f9fafb;
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.settingHint {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+/* 4단계 계층 구조 스타일 */
+.unitsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 학년 단계 (1단계) */
+.gradeSection {
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+}
+
+.gradeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 16px 20px;
+}
+
+.gradeToggleButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  flex: 1;
+}
+
+.gradeTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.selectAllButton {
+  padding: 8px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.selectAllButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.selectAllButton.selected {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.selectAllButton.partiallySelected {
+  background: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.toggleIcon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s;
+}
+
+.toggleIcon.expanded {
+  transform: rotate(180deg);
+}
+
+/* 대단원 컨테이너 (2단계) */
+.majorChaptersContainer {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8fafc;
+}
+
+.majorChapterSection {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+
+.majorChapterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #3b82f6;
+  padding: 12px 16px;
+}
+
+.majorChapterToggleButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  flex: 1;
+}
+
+.majorChapterInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.majorChapterId {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.majorChapterTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* 중단원 컨테이너 (3단계) */
+.subChaptersContainer {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #f1f5f9;
+}
+
+.subChapterSection {
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+}
+
+.subChapterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #10b981;
+  padding: 10px 14px;
+}
+
+.subChapterToggleButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  flex: 1;
+}
+
+.subChapterInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subChapterId {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.subChapterTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 소단원 그리드 (4단계) */
+.unitsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+  padding: 12px 14px;
+  background: #fafbfc;
+}
+
+.unitOption {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.unitOption:hover {
+  border-color: #667eea;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.unitOption.selected {
+  border-color: #10b981;
+  background: #ecfdf5;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.unitOptionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.unitOptionId {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.unitOptionCheck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #10b981;
+  border-radius: 50%;
+  color: white;
+}
+
+.unitOptionCheck svg {
+  width: 12px;
+  height: 12px;
+}
+
+.unitOptionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.4;
+}
+
+/* 프리뷰 섹션 */
+.settingPreview {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.previewTitle {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #374151;
+}
+
+.previewContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.previewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.previewLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.previewValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.previewUnits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.previewUnitTag {
+  background: #ddd6fe;
+  color: #5b21b6;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* 액션 버튼 */
+.settingsActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.cancelButton,
+.saveButton {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 2px solid #e5e7eb;
+}
+
+.cancelButton:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 2px solid transparent;
+}
+
+.saveButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.saveButton:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* 로딩 상태 */
+.loading {
+  opacity: 0;
+}
+
+.loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .settingsHeader {
+    padding: 16px 20px;
+  }
+  
+  .pageTitle {
+    font-size: 18px;
+  }
+  
+  .settingsContent {
+    padding: 20px;
+    padding-bottom: 100px;
+  }
+  
+  .previewItem {
+    flex-direction: column;
+  }
+  
+  .previewLabel {
+    margin-bottom: 4px;
+  }
+  
+  .unitsGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .majorChapterHeader, .subChapterHeader {
+    padding: 10px 12px;
+  }
+  
+  .majorChapterTitle, .subChapterTitle {
+    font-size: 13px;
+  }
+  
+  .selectAllButton {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+} 
