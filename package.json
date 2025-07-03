@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-favicons": "node scripts/generate-favicons.js && node scripts/generate-ico.js"
+    "generate-favicons": "node scripts/generate-favicons.js && node scripts/generate-ico.js",
+    "deploy": "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_AmjJP7gFg8ApsgrBC8Ud9Rf5xxWP/gCvK1Snfvh"
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
