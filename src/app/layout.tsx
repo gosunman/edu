@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: "과학 학습실 - 중1,2,3학년 과학 교육",
@@ -80,6 +81,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <Providers>
           {children}
+          <Analytics />
         </Providers>
       </body>
     </html>
