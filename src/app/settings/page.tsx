@@ -31,20 +31,10 @@ interface GroupedData {
 export default function SettingsPage() {
   const router = useRouter();
   const { data: session } = useSession();
-  const [cssLoaded, setCssLoaded] = useState(false);
   const [examDate, setExamDate] = useState('');
   const [examRange, setExamRange] = useState<string[]>([]);
   const [isValid, setIsValid] = useState(false);
   const [dateInputType, setDateInputType] = useState<'calendar' | 'manual'>('calendar');
-  
-  // CSS 로딩 상태 확인 - 간단한 타이머 기반
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCssLoaded(true);
-    }, 500); // 500ms 후 CSS 로드 완료로 간주
-    
-    return () => clearTimeout(timer);
-  }, []);
   
   // 사용자의 현재 학년 계산
   const getUserGrade = () => {
@@ -283,28 +273,8 @@ export default function SettingsPage() {
   const currentLv = calculateCurrentLv();
   const totalLv = calculateTotalLv();
 
-  // CSS가 로드되지 않았으면 로딩 상태 표시
-  if (!cssLoaded) {
-    return (
-      <div className={styles.settingsPage}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '100vh',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          fontSize: '18px',
-          fontWeight: '600'
-        }}>
-          로딩 중...
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={`${styles.settingsPage} ${cssLoaded ? styles.loaded : styles.loading}`}>
+    <div className={styles.settingsPage}>
       <header className={styles.settingsHeader}>
         <div className={styles.headerContent}>
           <button onClick={handleCancel} className={styles.backButton}>
