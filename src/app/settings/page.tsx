@@ -277,12 +277,6 @@ export default function SettingsPage() {
     <div className={styles.settingsPage}>
       <header className={styles.settingsHeader}>
         <div className={styles.headerContent}>
-          <button onClick={handleCancel} className={styles.backButton}>
-            <svg className={styles.backIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>뒤로</span>
-          </button>
           <h1 className={styles.pageTitle}>시험 설정</h1>
         </div>
       </header>
@@ -415,8 +409,19 @@ export default function SettingsPage() {
                         isGradePartiallySelected ? styles.partiallySelected : ''
                       }`}
                       onClick={() => handleGradeSelect(gradeData.grade, gradeUnitIds)}
+                      aria-label={isGradeSelected ? '전체 해제' : '전체 선택'}
                     >
-                      {isGradeSelected ? '전체 해제' : '전체 선택'}
+                      <svg
+                        className={styles.selectAllIcon}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </button>
                   </div>
                   
@@ -454,8 +459,19 @@ export default function SettingsPage() {
                                   isMajorChapterPartiallySelected ? styles.partiallySelected : ''
                                 }`}
                                 onClick={() => handleMajorChapterSelect(majorChapterData.majorChapter, majorChapterUnitIds)}
+                                aria-label={isMajorChapterSelected ? '전체 해제' : '전체 선택'}
                               >
-                                {isMajorChapterSelected ? '전체 해제' : '전체 선택'}
+                                <svg
+                                  className={styles.selectAllIcon}
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
                               </button>
                             </div>
 
@@ -493,8 +509,19 @@ export default function SettingsPage() {
                                             isSubChapterPartiallySelected ? styles.partiallySelected : ''
                                           }`}
                                           onClick={() => handleSubChapterSelect(subChapterData.subChapter, subChapterUnitIds)}
+                                          aria-label={isSubChapterSelected ? '전체 해제' : '전체 선택'}
                                         >
-                                          {isSubChapterSelected ? '전체 해제' : '전체 선택'}
+                                          <svg
+                                            className={styles.selectAllIcon}
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          >
+                                            <polyline points="20 6 9 17 4 12" />
+                                          </svg>
                                         </button>
                                       </div>
 

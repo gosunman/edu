@@ -242,31 +242,46 @@
 }
 
 .selectAllButton {
-  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
   transition: all 0.2s;
-  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
 }
 
 .selectAllButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #a5b4fc;
+  color: #fff;
 }
 
 .selectAllButton.selected {
-  background: #10b981;
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   border-color: #10b981;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
 }
 
 .selectAllButton.partiallySelected {
-  background: #f59e0b;
-  border-color: #f59e0b;
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #6b7280;
+  box-shadow: none;
+}
+
+.selectAllIcon {
+  width: 22px;
+  height: 22px;
+  display: block;
+  stroke: currentColor;
 }
 
 .toggleIcon {
@@ -299,8 +314,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #3b82f6;
+  background: #a5b4fc;
   padding: 12px 16px;
+  color: #222;
 }
 
 .majorChapterToggleButton {
@@ -321,8 +337,8 @@
 }
 
 .majorChapterId {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: rgba(34, 34, 34, 0.08);
+  color: #222;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 12px;
@@ -331,7 +347,8 @@
 
 .majorChapterTitle {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #222;
 }
 
 /* 중단원 컨테이너 (3단계) */
@@ -354,8 +371,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #10b981;
+  background: #c7d2fe;
   padding: 10px 14px;
+  color: #222;
 }
 
 .subChapterToggleButton {
@@ -376,8 +394,8 @@
 }
 
 .subChapterId {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: rgba(34, 34, 34, 0.08);
+  color: #222;
   padding: 3px 6px;
   border-radius: 4px;
   font-size: 11px;
@@ -386,7 +404,8 @@
 
 .subChapterTitle {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #222;
 }
 
 /* 소단원 그리드 (4단계) */
@@ -416,9 +435,9 @@
 }
 
 .unitOption.selected {
-  border-color: #10b981;
-  background: #ecfdf5;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  border-color: #e5e7eb;
+  background: #f3f4f6;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.10);
 }
 
 .unitOptionHeader {
@@ -430,7 +449,7 @@
 
 .unitOptionId {
   background: #f3f4f6;
-  color: #374151;
+  color: #444;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 11px;
@@ -444,9 +463,13 @@
   justify-content: center;
   width: 20px;
   height: 20px;
-  background: #10b981;
   border-radius: 50%;
   color: white;
+  background: #d1d5db;
+}
+
+.unitOption.selected .unitOptionCheck {
+  background: #2563eb;
 }
 
 .unitOptionCheck svg {
@@ -456,8 +479,8 @@
 
 .unitOptionTitle {
   font-size: 13px;
-  font-weight: 600;
-  color: #374151;
+  font-weight: 700;
+  color: #222;
   line-height: 1.4;
 }
 
@@ -610,7 +633,12 @@
   }
   
   .selectAllButton {
-    padding: 6px 12px;
-    font-size: 12px;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .selectAllIcon {
+    width: 18px;
+    height: 18px;
   }
 } 
