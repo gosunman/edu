@@ -4,37 +4,13 @@ import { useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import UserProfile from './UserProfile';
 
-// 개발 환경용 Mock 세션 데이터
-const mockSession = {
-  user: {
-    id: 'dev-user-123',
-    name: '개발자',
-    email: 'dev@example.com',
-    image: null,
-    school: '테스트 대학교',
-    grade: 2,
-    enrollment_year: 2023,
-    achievement_goal: 'advanced' as const,
-    stats: {
-      totalStudyTime: 120,
-      completedUnits: 5,
-      streak: 7,
-      averageScore: 85
-    }
-  }
-};
-
 export default function AuthWrapper() {
   const { data: session, status } = useSession();
   const [showProfile, setShowProfile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   // 개발 환경에서는 Mock 세션 사용
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  const effectiveSession = isDevelopment ? mockSession : session;
-  const effectiveStatus = isDevelopment ? 'authenticated' : status;
-
-  if (effectiveStatus === 'loading') {
+  if (status === 'loading') {
     return (
       <div className="auth-wrapper">
         <div className="loading-spinner">로딩 중...</div>
@@ -42,7 +18,7 @@ export default function AuthWrapper() {
     );
   }
 
-  if (effectiveStatus === 'unauthenticated') {
+  if (status === 'unauthenticated') {
     return (
       <div className="auth-wrapper">
         <button
@@ -76,19 +52,19 @@ export default function AuthWrapper() {
         onClick={() => setShowProfile(true)}
       >
         <div className="user-info">
-          <div className="user-name">{effectiveSession?.user?.name}</div>
-          <div className="user-email">{effectiveSession?.user?.email}</div>
+          <div className="user-name">{session?.user?.name}</div>
+          <div className="user-email">{session?.user?.email}</div>
         </div>
         <div className="user-avatar">
-          {effectiveSession?.user?.image ? (
+          {session?.user?.image ? (
             <img 
-              src={effectiveSession.user.image} 
+              src={session.user.image} 
               alt="Profile" 
               className="avatar-image"
             />
           ) : (
             <div className="avatar-placeholder">
-              {effectiveSession?.user?.name?.charAt(0) || 'U'}
+              {session?.user?.name?.charAt(0) || 'U'}
             </div>
           )}
         </div>
@@ -101,21 +77,21 @@ export default function AuthWrapper() {
             <div className="profile-modal-header">
               <div className="modal-header-content">
                 <div className="modal-avatar">
-                  {effectiveSession?.user?.image ? (
+                  {session?.user?.image ? (
                     <img 
-                      src={effectiveSession.user.image} 
+                      src={session.user.image} 
                       alt="Profile" 
                       className="modal-avatar-image"
                     />
                   ) : (
                     <div className="modal-avatar-placeholder">
-                      {effectiveSession?.user?.name?.charAt(0) || 'U'}
+                      {session?.user?.name?.charAt(0) || 'U'}
                     </div>
                   )}
                 </div>
                 <div className="modal-user-info">
-                  <h3 className="profile-modal-title">{effectiveSession?.user?.name}</h3>
-                  <p className="profile-modal-subtitle">{effectiveSession?.user?.email}</p>
+                  <h3 className="profile-modal-title">{session?.user?.name}</h3>
+                  <p className="profile-modal-subtitle">{session?.user?.email}</p>
                 </div>
               </div>
               <button
@@ -145,25 +121,19 @@ export default function AuthWrapper() {
                   {isEditing ? '취소' : '편집'}
                 </button>
                 <button
-                  onClick={() => {
-                    if (isDevelopment) {
-                      alert('개발 환경에서는 로그아웃 기능이 비활성화되어 있습니다.');
-                    } else {
-                      signOut();
-                    }
-                  }}
+                  onClick={() => signOut()}
                   className="logout-button"
                 >
                   <svg className="logout-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  {isDevelopment ? '로그아웃 (비활성화)' : '로그아웃'}
+                  로그아웃
                 </button>
               </div>
             </div>
           </div>
         </div>
-      )}
+      )}  
 
       <style jsx>{`
         .auth-wrapper {
