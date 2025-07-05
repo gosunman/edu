@@ -2,10 +2,9 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { AuthService } from "@/lib/auth";
 
-// 개발 환경용 기본값 설정
-const isDevelopment = process.env.NODE_ENV === 'development';
-const googleClientId = process.env.GOOGLE_CLIENT_ID || (isDevelopment ? 'mock-google-client-id' : '');
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET || (isDevelopment ? 'mock-google-client-secret' : '');
+// 환경변수가 없으면 Mock 값 사용
+const googleClientId = process.env.GOOGLE_CLIENT_ID || 'mock-google-client-id';
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET || 'mock-google-client-secret';
 
 const handler = NextAuth({
   providers: [
@@ -82,7 +81,7 @@ const handler = NextAuth({
       return token;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || (isDevelopment ? 'dev-secret-key-for-development-only' : ''),
+  secret: process.env.NEXTAUTH_SECRET || 'dev-secret-key-for-development-only',
   session: {
     strategy: "jwt",
   },

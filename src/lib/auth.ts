@@ -205,10 +205,10 @@ export class AuthService {
         .select('*')
         .eq('user_id', userId);
 
-      const totalCorrectAnswers = progressData?.reduce((sum, progress) => sum + progress.correct_answers, 0) || 0;
-      const totalAttempts = progressData?.reduce((sum, progress) => sum + progress.total_attempts, 0) || 0;
+      const totalCorrectAnswers = progressData?.reduce((sum: number, progress: any) => sum + progress.correct_answers, 0) || 0;
+      const totalAttempts = progressData?.reduce((sum: number, progress: any) => sum + progress.total_attempts, 0) || 0;
       const totalSessions = sessionData?.length || 0;
-      const totalStudyTime = sessionData?.reduce((sum, session) => sum + session.duration_minutes, 0) || 0;
+      const totalStudyTime = sessionData?.reduce((sum: number, session: any) => sum + session.duration_minutes, 0) || 0;
 
       return {
         totalCorrectAnswers,

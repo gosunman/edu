@@ -130,7 +130,7 @@ export default function Home() {
             <h3 className={styles.modeTitle}>암기 카드</h3>
             <p className={styles.modeDescription}>단원별 핵심 개념 학습</p>
           </button>
-          <button className={styles.modeCard} onClick={() => handleModeClick('simulation')}>
+          <button className={styles.modeCard} onClick={() => router.push('/simulation')}>
             <div className={styles.modeIcon}>🎮</div>
             <h3 className={styles.modeTitle}>3D 시뮬레이션</h3>
             <p className={styles.modeDescription}>직관적인 실험 체험</p>
@@ -161,26 +161,11 @@ export default function Home() {
     </section>
   );
 
-  const renderSimulationContent = () => (
-    <section className={styles.simulationContainer}>
-      <div className={styles.pageHeader}>
-        <div className={styles.headerContent}>
-          <h2 className={styles.pageTitle}>3D 시뮬레이션</h2>
-        </div>
-        <div className={styles.headerDecoration}>
-          <div className={styles.decorationDot}></div>
-          <div className={styles.decorationLine}></div>
-        </div>
-      </div>
-      <div className={styles.simulationPlaceholder}>
-        <div className={styles.simulationIcon}>🎮</div>
-        <h3 className={styles.simulationText}>3D 시뮬레이션 준비 중...</h3>
-        <p className={styles.simulationDescription}>
-          곧 원자 구조, 전기 회로, 화학 반응 등을 3D로 체험할 수 있어요!
-        </p>
-      </div>
-    </section>
-  );
+  const renderSimulationContent = () => {
+    // Redirect to simulation page
+    router.push('/simulation');
+    return null;
+  };
 
   const renderUnitsContent = () => (
     <section className={styles.unitsContainer}>

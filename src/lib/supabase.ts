@@ -1,17 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-// 개발 환경용 기본값 설정
-const isDevelopment = process.env.NODE_ENV === 'development';
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || (isDevelopment ? 'https://mock-supabase-url.supabase.co' : '');
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || (isDevelopment ? 'mock-anon-key-for-development' : '');
+// 환경변수가 없으면 Mock 사용
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mock-supabase-url.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'mock-anon-key-for-development';
 
-// 환경 변수 검증 (개발 환경에서는 Mock 값 허용)
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-// 개발 환경에서는 Mock 클라이언트 사용
-export const supabase = isDevelopment && supabaseUrl.includes('mock') 
+// Mock URL이면 Mock 클라이언트 사용
+export const supabase = supabaseUrl.includes('mock') 
   ? createMockSupabaseClient() 
   : createClient(supabaseUrl, supabaseAnonKey);
 
