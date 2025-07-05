@@ -133,29 +133,31 @@ export default function SimulationPage() {
           {filteredSimulations.length > 0 ? (
             filteredSimulations.map((simulation) => (
               <div key={simulation.id} className={styles.simulationCard}>
-                <div className={styles.cardHeader}>
-                  <div className={styles.cardIcon}>{getIcon(simulation.id)}</div>
-                  <div className={styles.cardMeta}>
-                    <span
-                      className={styles.difficultyBadge}
-                      style={{ backgroundColor: getDifficultyColor(simulation.difficulty) }}
+                <div className={styles.cardHeaderCompact}>
+                  <span className={styles.cardIcon}>{getIcon(simulation.id)}</span>
+                  <div className={styles.cardHeaderRight}>
+                    <div className={styles.cardMetaCompact}>
+                      <span
+                        className={styles.difficultyBadge}
+                        style={{ backgroundColor: getDifficultyColor(simulation.difficulty) }}
+                      >
+                        {getDifficultyLabel(simulation.difficulty)}
+                      </span>
+                      <span className={styles.subjectBadge}>
+                        {getSubjectLabel(simulation.subject)}
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleFavoriteToggle(simulation);
+                      }}
+                      className={`${styles.favoriteButton} ${checkFavorite(simulation.id, 'simulation') ? styles.favorited : ''}`}
                     >
-                      {getDifficultyLabel(simulation.difficulty)}
-                    </span>
-                    <span className={styles.subjectBadge}>
-                      {getSubjectLabel(simulation.subject)}
-                    </span>
+                      {checkFavorite(simulation.id, 'simulation') ? '★' : '☆'}
+                    </button>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleFavoriteToggle(simulation);
-                    }}
-                    className={`${styles.favoriteButton} ${checkFavorite(simulation.id, 'simulation') ? styles.favorited : ''}`}
-                  >
-                    {checkFavorite(simulation.id, 'simulation') ? '★' : '☆'}
-                  </button>
                 </div>
                 <Link href={simulation.path} className={styles.cardLink}>
                   <h3 className={styles.cardTitle}>{simulation.title}</h3>

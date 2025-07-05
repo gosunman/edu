@@ -300,32 +300,23 @@ export default function SettingsPage() {
         {/* 학습 현황 대시보드 */}
         <section className={styles.dashboard}>
           <h2 className={styles.sectionTitle}>학습 현황</h2>
-          <div className={styles.levelRow}>
-            <div className={styles.levelCard}>
-              <div className={styles.statIcon}>LV</div>
-              <div className={styles.statValue}>{learnerLevel}</div>
-              <div className={styles.statLabel}>학습자 레벨</div>
-              <div className={styles.expBarWrap}>
-                <div className={styles.expBar}>
-                  <div
-                    className={styles.expFill}
-                    style={{ width: `${progressPercentage}%` }}
-                  ></div>
-                </div>
-                <div className={styles.expText}>레벨업 경험치 {completedUnits} / {totalUnits}</div>
-              </div>
+          <div className={styles.levelRowCompact}>
+            <span className={styles.studyLvText}>Study Lv {learnerLevel}</span>
+            <div className={styles.expBarCompact}>
+              <div className={styles.expFillCompact} style={{ width: `${progressPercentage}%` }}></div>
             </div>
+            <span className={styles.expTextCompact}>{completedUnits} / {totalUnits}</span>
           </div>
-          <div className={styles.statsRowBelow}>
-            <div className={styles.squareStatCard}>
-              <div className={styles.statIcon}>📈</div>
-              <div className={styles.statValue}>{userStats.totalAttempts}</div>
-              <div className={styles.statLabel}>학습 횟수</div>
+          <div className={styles.statsRowCompact}>
+            <div className={styles.squareStatCardCompact}>
+              <span className={styles.statIconCompact}>📈</span>
+              <span className={styles.statValueCompact}>{userStats.totalAttempts}</span>
+              <span className={styles.statLabelCompact}>학습 횟수</span>
             </div>
-            <div className={styles.squareStatCard}>
-              <div className={styles.statIcon}>📚</div>
-              <div className={styles.statValue}>{totalUnits}</div>
-              <div className={styles.statLabel}>총 단원 수</div>
+            <div className={styles.squareStatCardCompact}>
+              <span className={styles.statIconCompact}>📚</span>
+              <span className={styles.statValueCompact}>{totalUnits}</span>
+              <span className={styles.statLabelCompact}>총 단원 수</span>
             </div>
           </div>
         </section>
