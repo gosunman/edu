@@ -417,4 +417,22 @@
   .modeDescription {
     font-size: 10px;
   }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #111;
+}
+
+.emptyState p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #222;
+}
+
+.emptyState p:first-child {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111;
 } 
