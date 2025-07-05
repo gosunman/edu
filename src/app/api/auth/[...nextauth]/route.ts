@@ -2,11 +2,16 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { AuthService } from "@/lib/auth";
 
+// 개발 환경용 기본값 설정
+const isDevelopment = process.env.NODE_ENV === 'development';
+const googleClientId = process.env.GOOGLE_CLIENT_ID || (isDevelopment ? 'mock-google-client-id' : '');
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET || (isDevelopment ? 'mock-google-client-secret' : '');
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
     }),
   ],
   pages: {
@@ -77,7 +82,7 @@ const handler = NextAuth({
       return token;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || (isDevelopment ? 'dev-secret-key-for-development-only' : ''),
   session: {
     strategy: "jwt",
   },
