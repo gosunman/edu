@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 import './sunspot.css';
 
 interface Sunspot {
@@ -413,15 +414,9 @@ export default function SunspotPage() {
   };
 
   return (
-    <div className="sunspot-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>태양 흑점 시뮬레이션</h1>
-      </div>
-
-      <div className="controls">
+    <MainLayout title="태양 흑점 시뮬레이션">
+      <div className="sunspot-page">
+        <div className="controls">
         <div className="control-group">
           <button 
             onClick={toggleAnimation}
@@ -518,6 +513,7 @@ export default function SunspotPage() {
           <li><strong>안전 주의</strong>: 실제 태양 관측 시 반드시 안전한 필터나 망원경 사용</li>
         </ul>
       </div>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 

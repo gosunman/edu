@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 
 interface MagneticFieldLine {
   points: { x: number; y: number }[];
@@ -814,15 +814,9 @@ export default function MagneticFieldPage() {
   };
 
   return (
-    <div className="magnetic-field-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>자기장 시뮬레이터</h1>
-      </div>
-
-      <div className="controls">
+    <MainLayout title="자기장 시뮬레이터">
+      <div className="magnetic-field-page">
+        <div className="controls">
         <div className="control-group">
           <label>자석 유형</label>
           <select 
@@ -1122,6 +1116,7 @@ export default function MagneticFieldPage() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 

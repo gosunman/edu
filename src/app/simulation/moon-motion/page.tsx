@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 
 interface CelestialBody {
   x: number;
@@ -15,7 +15,7 @@ interface CelestialBody {
 export default function MoonMotionPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isRunning, setIsRunning] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(0.2);
   const [showOrbits, setShowOrbits] = useState(true);
   const [showPhases, setShowPhases] = useState(true);
   const [currentDay, setCurrentDay] = useState(0);
@@ -244,11 +244,11 @@ export default function MoonMotionPage() {
     if (phase < 0.5) {
       // Waxing phases
       ctx.arc(0, 0, radius, -Math.PI/2, Math.PI/2);
-      ctx.ellipse(0, 0, radius * Math.cos(phase * Math.PI), radius, 0, -Math.PI/2, Math.PI/2);
+      ctx.ellipse(0, 0, Math.abs(radius * Math.cos(phase * Math.PI)), radius, 0, -Math.PI/2, Math.PI/2);
     } else {
       // Waning phases
       ctx.arc(0, 0, radius, Math.PI/2, -Math.PI/2);
-      ctx.ellipse(0, 0, radius * Math.cos(phase * Math.PI), radius, 0, Math.PI/2, -Math.PI/2);
+      ctx.ellipse(0, 0, Math.abs(radius * Math.cos(phase * Math.PI)), radius, 0, Math.PI/2, -Math.PI/2);
     }
     
     ctx.fill();
@@ -279,10 +279,10 @@ export default function MoonMotionPage() {
       const phaseRatio = index / phaseAngles.length;
       if (phaseRatio < 0.5) {
         ctx.arc(phaseX, phaseY, 12, -Math.PI/2, Math.PI/2);
-        ctx.ellipse(phaseX, phaseY, 12 * Math.cos(phaseRatio * Math.PI), 12, 0, -Math.PI/2, Math.PI/2);
+        ctx.ellipse(phaseX, phaseY, Math.abs(12 * Math.cos(phaseRatio * Math.PI)), 12, 0, -Math.PI/2, Math.PI/2);
       } else {
         ctx.arc(phaseX, phaseY, 12, Math.PI/2, -Math.PI/2);
-        ctx.ellipse(phaseX, phaseY, 12 * Math.cos(phaseRatio * Math.PI), 12, 0, Math.PI/2, -Math.PI/2);
+        ctx.ellipse(phaseX, phaseY, Math.abs(12 * Math.cos(phaseRatio * Math.PI)), 12, 0, Math.PI/2, -Math.PI/2);
       }
       
       ctx.fill();
@@ -316,15 +316,9 @@ export default function MoonMotionPage() {
   };
 
   return (
-    <div className="moon-motion-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>달의 움직임과 일주/연주운동</h1>
-      </div>
-
-      <div className="controls">
+    <MainLayout title="달의 움직임과 일주/연주운동">
+      <div className="moon-motion-page">
+        <div className="controls">
         <div className="control-group">
           <label>보기 모드</label>
           <select 
@@ -341,7 +335,7 @@ export default function MoonMotionPage() {
           <input
             type="range"
             min="0.1"
-            max="5"
+            max="2"
             step="0.1"
             value={speed}
             onChange={(e) => setSpeed(Number(e.target.value))}
@@ -418,38 +412,14 @@ export default function MoonMotionPage() {
 
       <style jsx>{`
         .moon-motion-page {
-          padding: 20px;
           max-width: 1200px;
           margin: 0 auto;
-        }
-
-        .header {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          margin-bottom: 30px;
-        }
-
-        .back-button {
-          color: #3b82f6;
-          text-decoration: none;
-          font-weight: 500;
-        }
-
-        .back-button:hover {
-          text-decoration: underline;
-        }
-
-        h1 {
-          font-size: 2rem;
-          font-weight: 700;
-          color: #1f2937;
         }
 
         .controls {
           display: flex;
           gap: 20px;
-          margin-bottom: 30px;
+          margin: 20px 20px 30px 20px;
           flex-wrap: wrap;
           background: #f9fafb;
           padding: 20px;
@@ -590,6 +560,7 @@ export default function MoonMotionPage() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 

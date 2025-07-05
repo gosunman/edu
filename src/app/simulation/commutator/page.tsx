@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 import './commutator.css';
 
 export default function CommutatorPage() {
@@ -484,15 +485,9 @@ export default function CommutatorPage() {
   };
 
   return (
-    <div className="commutator-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>정류자 시뮬레이션</h1>
-      </div>
-
-      <div className="controls">
+    <MainLayout title="정류자 시뮬레이션">
+      <div className="commutator-page">
+        <div className="controls">
         <div className="control-group">
           <button 
             onClick={toggleAnimation}
@@ -580,6 +575,7 @@ export default function CommutatorPage() {
           <li><strong>스파크</strong>: 전환 순간에 발생하는 전기적 방전 현상</li>
         </ul>
       </div>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 

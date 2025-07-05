@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 import './moon-phase.css';
 
 interface MoonPhase {
@@ -401,15 +402,9 @@ export default function MoonPhasePage() {
   };
 
   return (
-    <div className="moon-phase-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>달의 위상변화 시뮬레이션</h1>
-      </div>
-
-      <div className="controls">
+    <MainLayout title="달의 위상변화 시뮬레이션">
+      <div className="moon-phase-page">
+        <div className="controls">
         <div className="control-group">
           <button 
             onClick={toggleAnimation}
@@ -503,6 +498,7 @@ export default function MoonPhasePage() {
           <li><strong>그믐달</strong>: 달의 왼쪽 일부가 밝게 보임</li>
         </ul>
       </div>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 

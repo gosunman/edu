@@ -23,6 +23,35 @@ export interface FlashCard {
   answer: string;
   unitId: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  category: 'science' | 'language' | 'custom';
+  subject: string;
+  chapter: string;
+  subChapter: string;
+}
+
+export interface FavoriteItem {
+  id: string;
+  type: 'flashcard' | 'simulation';
+  title: string;
+  description: string;
+  category: string;
+  subject: string;
+  chapter?: string;
+  subChapter?: string;
+  addedAt: Date;
+}
+
+export interface Simulation {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  subject: string;
+  chapter: string;
+  subChapter: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  path: string;
+  image?: string;
 }
 
 export interface UserStats {

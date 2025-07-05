@@ -2,6 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
+import { NavigationProvider } from '@/lib/navigation';
 
 interface ProvidersProps {
   children: ReactNode;
@@ -13,7 +14,9 @@ export default function Providers({ children }: ProvidersProps) {
       refetchInterval={0} 
       refetchOnWindowFocus={false}
     >
-      {children}
+      <NavigationProvider>
+        {children}
+      </NavigationProvider>
     </SessionProvider>
   );
 } 

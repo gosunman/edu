@@ -1,0 +1,101 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 60px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.backButton:active {
+  transform: translateY(0);
+}
+
+.backButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.title {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .headerContent {
+    padding: 10px 16px;
+    min-height: 56px;
+  }
+  
+  .backButton {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .backButton svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerContent {
+    padding: 8px 12px;
+    gap: 12px;
+  }
+  
+  .backButton span {
+    display: none;
+  }
+  
+  .backButton {
+    padding: 8px;
+    min-width: 40px;
+    justify-content: center;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+} 

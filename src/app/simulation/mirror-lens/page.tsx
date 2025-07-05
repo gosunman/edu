@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 
 type MirrorType = 'plane' | 'concave' | 'convex';
 type LensType = 'convex' | 'concave';
@@ -384,13 +384,8 @@ export default function MirrorLensPage() {
   };
 
   return (
-    <div className="mirror-lens-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>거울과 렌즈 작도</h1>
-      </div>
+    <MainLayout title="거울과 렌즈 작도">
+      <div className="mirror-lens-page">
 
       <div className="controls">
         <div className="control-group">
@@ -512,28 +507,7 @@ export default function MirrorLensPage() {
           margin: 0 auto;
         }
 
-        .header {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          margin-bottom: 30px;
-        }
 
-        .back-button {
-          color: #3b82f6;
-          text-decoration: none;
-          font-weight: 500;
-        }
-
-        .back-button:hover {
-          text-decoration: underline;
-        }
-
-        h1 {
-          font-size: 2rem;
-          font-weight: 700;
-          color: #1f2937;
-        }
 
         .controls {
           display: flex;
@@ -634,6 +608,7 @@ export default function MirrorLensPage() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 

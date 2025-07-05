@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 
 interface CircuitElement {
   id: string;
@@ -501,15 +501,9 @@ export default function ElectricCircuitPage() {
   };
 
   return (
-    <div className="electric-circuit-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>전압, 전류, 저항 시뮬레이터</h1>
-      </div>
-
-      <div className="controls">
+    <MainLayout title="전압, 전류, 저항 시뮬레이터">
+      <div className="electric-circuit-page">
+        <div className="controls">
         <div className="control-group">
           <label>회로 유형</label>
           <select 
@@ -796,6 +790,7 @@ export default function ElectricCircuitPage() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 

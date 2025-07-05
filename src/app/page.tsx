@@ -2,244 +2,149 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { units } from '@/data/units';
-import { flashCards } from '@/data/flashCards';
-import UnitList from '@/components/UnitList';
-import FlashCardSection from '@/components/FlashCardSection';
-import AuthWrapper from '@/components/AuthWrapper';
-import ProfileSetup from '@/components/ProfileSetup';
-import UnitSelector from '@/components/UnitSelector';
-import FlashCardStudy from '@/components/FlashCardStudy';
-import BottomNavigation from '@/components/BottomNavigation';
+import { flashCards, searchFlashCards } from '@/data/flashCards';
+import { simulations, searchSimulations } from '@/data/simulations';
+import MainLayout from '@/components/MainLayout';
 import { AuthService } from '@/lib/auth';
-import { Unit, UserStats, Mode, ProgressUpdate } from '@/types';
 import styles from './Home.module.css';
+import { Unit } from '@/types';
 
-export default function Home() {
+function HomeContent() {
   const { data: session } = useSession();
   const router = useRouter();
-  
-  // State
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [activeMode, setActiveMode] = useState<Mode>('main');
-  const [showProfileSetup, setShowProfileSetup] = useState(false);
-  const [showUnitSelector, setShowUnitSelector] = useState(false);
-  const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
-  const [userStats, setUserStats] = useState<UserStats>({
-    totalCorrectAnswers: 0,
-    totalAttempts: 0,
-    accuracy: 0,
-    totalSessions: 0,
-    totalStudyTime: 0,
-  });
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [favoritesReady, setFavoritesReady] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Effects
+  // 즐겨찾기 클라이언트 마운트 후에만 사용
   useEffect(() => {
-    if (session?.user?.id) {
-      loadUserStats();
-    }
-  }, [session?.user?.id]);
+    let mounted = true;
+    import('@/lib/favorites').then(mod => {
+      if (mounted) {
+        setFavorites(mod.getFavorites());
+        setFavoritesReady(true);
+      }
+    });
+    return () => { mounted = false; };
+  }, []);
 
-  useEffect(() => {
-    if (session?.user && !session.user.school) {
-      setShowProfileSetup(true);
-    }
-  }, [session?.user]);
+  // 전체 교육자료 통합 검색
+  const filteredFlashCards = searchQuery.trim() ? searchFlashCards(searchQuery) : [];
+  const filteredSimulations = searchQuery.trim() ? searchSimulations(searchQuery) : [];
 
-  // Functions
-  const loadUserStats = async () => {
-    if (session?.user?.id) {
-      const stats = await AuthService.getUserStats(session.user.id);
-      setUserStats(stats);
-    }
-  };
-
-  const handleAnswer = async (isCorrect: boolean) => {
-    if (isCorrect) {
-      alert('정답! 🎉');
-    } else {
-      alert('틀렸어요 😅');
-    }
-
-    setShowAnswer(false);
-    setCurrentCardIndex(prev => (prev + 1) % flashCards.length);
-
-    // DB에 진행률 업데이트
-    if (session?.user?.id) {
-      const currentUnit = units[0];
-      await AuthService.updateProgress({
-        user_id: session.user.id,
-        unit_id: currentUnit.id,
-        correct_answers: isCorrect ? 1 : 0,
-        total_attempts: 1,
-      });
-      await loadUserStats();
-    }
-  };
-
-  const handleModeClick = (mode: Mode) => {
-    setActiveMode(mode);
-  };
-
-  const handleSettingClick = () => {
-    router.push('/settings');
-  };
-
-  const handleUnitSelect = (unit: Unit) => {
-    setSelectedUnit(unit);
-    setShowUnitSelector(false);
-  };
-
-  const calculateTotalLv = () => {
-    return units.filter(unit => unit.type === 'unit' && unit.progress >= 100).length;
-  };
-
-  const currentLv = 0; // 시험 범위 설정이 없으면 0
-  const totalLv = calculateTotalLv();
-
-  // Render functions
-  const renderMainContent = () => (
-    <>
+  return (
+    <div className={styles.container}>
       <section className={styles.welcomeSection}>
         <h2 className={styles.welcomeTitle}>안녕하세요! 👋</h2>
         <p className={styles.welcomeText}>오늘도 과학의 신비로운 세계를 탐험해볼까요?</p>
       </section>
 
-      <section className={styles.statsContainer}>
-        <div className={styles.statCard}>
-          <div className={styles.statNumber}>{userStats.accuracy}%</div>
-          <div className={styles.statLabel}>정답률</div>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statNumber}>{userStats.totalAttempts}</div>
-          <div className={styles.statLabel}>학습 횟수</div>
-        </div>
-        <div className={styles.statCardClickable} onClick={() => handleModeClick('units')}>
-          <div className={styles.statNumber}>{units.filter(u => u.type === 'unit').length}</div>
-          <div className={styles.statLabel}>학습 단원</div>
+      {/* 검색 섹션 */}
+      <section className={styles.searchSection}>
+        <div className={styles.searchBox}>
+          <input
+            type="text"
+            placeholder="암기카드, 시뮬레이션 전체 검색..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+          />
         </div>
       </section>
 
-      <section className={styles.modesContainer}>
-        <h2 className={styles.sectionTitle}>학습 모드</h2>
-        <div className={styles.modesGridVertical}>
-          <button className={styles.modeCard} onClick={() => handleModeClick('flashcard')}>
-            <div className={styles.modeIcon}>📚</div>
-            <h3 className={styles.modeTitle}>암기 카드</h3>
-            <p className={styles.modeDescription}>단원별 핵심 개념 학습</p>
-          </button>
-          <button className={styles.modeCard} onClick={() => router.push('/simulation')}>
-            <div className={styles.modeIcon}>🎮</div>
-            <h3 className={styles.modeTitle}>3D 시뮬레이션</h3>
-            <p className={styles.modeDescription}>직관적인 실험 체험</p>
-          </button>
-        </div>
-      </section>
-    </>
-  );
-
-  const renderFlashCardContent = () => (
-    <section className={styles.flashCardContainer}>
-      <div className={styles.pageHeader}>
-        <div className={styles.headerContent}>
-          <h2 className={styles.pageTitle}>암기 카드</h2>
-        </div>
-        <div className={styles.headerDecoration}>
-          <div className={styles.decorationDot}></div>
-          <div className={styles.decorationLine}></div>
-        </div>
-      </div>
-      <FlashCardSection
-        flashCards={flashCards}
-        currentCardIndex={currentCardIndex}
-        showAnswer={showAnswer}
-        toggleAnswer={() => setShowAnswer(!showAnswer)}
-        handleAnswer={handleAnswer}
-      />
-    </section>
-  );
-
-  const renderSimulationContent = () => {
-    // Redirect to simulation page
-    router.push('/simulation');
-    return null;
-  };
-
-  const renderUnitsContent = () => (
-    <section className={styles.unitsContainer}>
-      <div className={styles.pageHeader}>
-        <div className={styles.headerContent}>
-          <h2 className={styles.pageTitle}>학습 단원</h2>
-        </div>
-        <div className={styles.headerDecoration}>
-          <div className={styles.decorationDot}></div>
-          <div className={styles.decorationLine}></div>
-        </div>
-      </div>
-      <UnitList 
-        onUnitSelect={(unit) => {
-          console.log('Selected unit:', unit);
-          setSelectedUnit(unit);
-        }}
-        selectedUnits={selectedUnit ? [selectedUnit.id] : []}
-      />
-    </section>
-  );
-
-  const renderContent = () => {
-    switch (activeMode) {
-      case 'main':
-        return renderMainContent();
-      case 'flashcard':
-        return renderFlashCardContent();
-      case 'simulation':
-        return renderSimulationContent();
-      case 'units':
-        return renderUnitsContent();
-      default:
-        return renderMainContent();
-    }
-  };
-
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <div className={styles.headerLeft}>
-            <div className={styles.headerIcon}>🔬</div>
-            <div className={styles.headerText}>
-              <h1 className={styles.headerTitle}>과학 학습실</h1>
-              <p className={styles.headerSubtitle}>중1,2,3학년 과학 교육</p>
-            </div>
+      {/* 검색 결과 또는 즐겨찾기 */}
+      {searchQuery.trim() ? (
+        <section className={styles.favoritesSection}>
+          <h2 className={styles.sectionTitle}>검색 결과</h2>
+          <div className={styles.favoritesGrid}>
+            {/* 검색 결과 렌더링 */}
+            {filteredFlashCards.map(card => (
+              <div key={`flashcard-${card.id}`} className={styles.favoriteCard}>
+                <div className={styles.favoriteHeader}>
+                  <span className={styles.favoriteType}>📚</span>
+                  <span className={styles.favoriteSubject}>{card.subject}</span>
+                </div>
+                <h3 className={styles.favoriteTitle}>{card.question}</h3>
+                <p className={styles.favoriteDescription}>{card.answer}</p>
+                <button
+                  className={styles.favoriteActionButton}
+                  onClick={() => router.push('/flashcard')}
+                >
+                  암기카드 보기
+                </button>
+              </div>
+            ))}
+            {filteredSimulations.map(sim => (
+              <div key={`simulation-${sim.id}`} className={styles.favoriteCard}>
+                <div className={styles.favoriteHeader}>
+                  <span className={styles.favoriteType}>🎮</span>
+                  <span className={styles.favoriteSubject}>{sim.subject}</span>
+                </div>
+                <h3 className={styles.favoriteTitle}>{sim.title}</h3>
+                <p className={styles.favoriteDescription}>{sim.description}</p>
+                <button
+                  className={styles.favoriteActionButton}
+                  onClick={() => router.push(sim.path)}
+                >
+                  시뮬레이션 실행
+                </button>
+              </div>
+            ))}
           </div>
-          <AuthWrapper />
+          {filteredFlashCards.length + filteredSimulations.length === 0 && (
+            <p className={styles.noResults}>검색 결과가 없습니다.</p>
+          )}
+        </section>
+      ) : favoritesReady && favorites.length > 0 ? (
+        <section className={styles.favoritesSection}>
+          <h2 className={styles.sectionTitle}>즐겨찾기</h2>
+          <div className={styles.favoritesGrid}>
+            {favorites.map((item) => (
+              <div key={`${item.type}-${item.id}`} className={styles.favoriteCard}>
+                <div className={styles.favoriteHeader}>
+                  <span className={styles.favoriteType}>
+                    {item.type === 'flashcard' ? '📚' : '🎮'}
+                  </span>
+                  <span className={styles.favoriteSubject}>{item.subject}</span>
+                </div>
+                <h3 className={styles.favoriteTitle}>{item.title}</h3>
+                <p className={styles.favoriteDescription}>{item.description}</p>
+                <button
+                  className={styles.favoriteActionButton}
+                  onClick={() => {
+                    if (item.type === 'flashcard') {
+                      router.push('/flashcard');
+                    } else {
+                      const sim = simulations.find(s => s.id === item.id);
+                      if (sim) {
+                        router.push(sim.path);
+                      }
+                    }
+                  }}
+                >
+                  {item.type === 'flashcard' ? '암기카드 보기' : '시뮬레이션 실행'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <div className={styles.emptyState}>
+            <h2 className={styles.sectionTitle}>즐겨찾기</h2>
+            <p>아직 즐겨찾기한 항목이 없어요.</p>
+            <p>암기카드나 시뮬레이션에서 ⭐️를 눌러 추가해보세요!</p>
         </div>
-      </header>
-
-      <main className={styles.mainContent}>
-        {renderContent()}
-      </main>
-
-      {showProfileSetup && (
-        <ProfileSetup onComplete={() => setShowProfileSetup(false)} />
       )}
-
-      {selectedUnit && (
-        <FlashCardStudy
-          selectedUnit={selectedUnit}
-          onClose={() => setSelectedUnit(null)}
-        />
-      )}
-
-      <BottomNavigation
-        activeMode={activeMode}
-        onModeChange={handleModeClick}
-        onSettingClick={handleSettingClick}
-        currentLv={currentLv}
-        totalLv={totalLv}
-      />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <MainLayout>
+      <HomeContent />
+    </MainLayout>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
+import MainLayout from '@/components/MainLayout';
 import './motor.css';
 
 export default function MotorPage() {
@@ -408,15 +408,9 @@ export default function MotorPage() {
   };
 
   return (
-    <div className="motor-page">
-      <div className="header">
-        <Link href="/simulation" className="back-button">
-          ← 시뮬레이션 목록
-        </Link>
-        <h1>전동기 시뮬레이션</h1>
-      </div>
-
-      <div className="controls">
+    <MainLayout title="전동기 시뮬레이션">
+      <div className="motor-page">
+        <div className="controls">
         <div className="control-group">
           <button 
             onClick={toggleAnimation}
@@ -514,6 +508,7 @@ export default function MotorPage() {
           <li><strong>토크</strong>: 회전축에 대한 회전력, 코일 양쪽에서 발생하는 힘의 합</li>
         </ul>
       </div>
-    </div>
+      </div>
+    </MainLayout>
   );
 } 
