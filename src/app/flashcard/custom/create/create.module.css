@@ -1,1 +1,204 @@
- 
+/* === 통일성 있는 카드 생성 페이지 스타일 === */
+.createContainer {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
+  max-width: 520px;
+  margin: 40px auto 0 auto;
+  padding: 32px 24px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-size: 17px;
+  font-weight: 700;
+  color: #22223b;
+  margin-bottom: 2px;
+  letter-spacing: -0.5px;
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+}
+
+/* 묶음 제목 라벨만 더 크게 */
+.titleLabel {
+  font-size: 22px;
+  font-weight: 800;
+  color: #22223b;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+}
+
+.input {
+  padding: 13px 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+  background: #f9fafb;
+  transition: border 0.2s;
+}
+.input:focus {
+  border: 2px solid #667eea;
+  outline: none;
+  background: #fff;
+}
+
+.textarea {
+  padding: 13px 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', Arial, sans-serif;
+  background: #f9fafb;
+  resize: vertical;
+  transition: border 0.2s;
+}
+.textarea:focus {
+  border: 2px solid #667eea;
+  outline: none;
+  background: #fff;
+}
+
+.cardInputGroup {
+  background: #f3f4f6;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(102, 126, 234, 0.08);
+  padding: 18px 14px 12px 14px;
+  margin-bottom: 12px;
+  position: relative;
+  border: 1.5px solid #e5e7eb;
+}
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.cardIndex {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #667eea;
+}
+.removeButton {
+  background: #f3f4f6;
+  border: none;
+  color: #b0b0b0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 50%;
+  transition: background 0.15s, color 0.15s;
+  box-shadow: none;
+  margin-right: -2px;
+}
+.removeButton:hover {
+  background: #ffeaea;
+  color: #ff5a5a;
+}
+
+.addButton {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 0;
+  margin: 8px 0 0 0;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
+}
+.addButton:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #764ba2 100%);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.18);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+.saveButton {
+  flex: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 0;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.10);
+}
+.saveButton:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #764ba2 100%);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.18);
+}
+.cancelButton {
+  flex: 1;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 0;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.cancelButton:hover {
+  background: #cbd5e1;
+}
+
+/* 2지선다(맞다/아니다) 답변 버튼 */
+.answerTypeToggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.answerTypeBtn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.answerTypeBtn.selected, .answerTypeBtn:active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-color: #667eea;
+}
+.answerTypeBtn:hover {
+  border-color: #667eea;
+}
+
+@media (max-width: 600px) {
+  .createContainer {
+    max-width: 100%;
+    padding: 12px 2vw;
+  }
+  .cardInputGroup {
+    padding: 12px 6px 8px 6px;
+  }
+  .addButton, .saveButton, .cancelButton {
+    font-size: 1rem;
+    padding: 10px 0;
+  }
+} 

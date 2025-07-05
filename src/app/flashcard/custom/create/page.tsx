@@ -8,25 +8,38 @@ import styles from './create.module.css';
 interface CardInput {
   question: string;
   answer: string;
+  type?: 'subjective' | 'boolean';
 }
 
 export default function CreateCustomFlashCardPage() {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [cards, setCards] = useState<CardInput[]>([
-    { question: '', answer: '' },
-    { question: '', answer: '' },
-    { question: '', answer: '' },
+    { question: '', answer: '', type: 'subjective' },
+    { question: '', answer: '', type: 'subjective' },
+    { question: '', answer: '', type: 'subjective' },
   ]);
 
-  const handleCardChange = (index: number, field: 'question' | 'answer', value: string) => {
+  const handleCardChange = (index: number, field: 'question' | 'answer' | 'type', value: string) => {
     const newCards = [...cards];
-    newCards[index][field] = value;
+    if (field === 'type') {
+      newCards[index].type = value as 'subjective' | 'boolean';
+      // 2지선다로 바꿀 때 답변값 초기화
+      if (value === 'boolean') newCards[index].answer = '';
+    } else {
+      newCards[index][field] = value;
+    }
+    setCards(newCards);
+  };
+
+  const handleBooleanAnswer = (index: number, value: '맞다' | '아니다') => {
+    const newCards = [...cards];
+    newCards[index].answer = value;
     setCards(newCards);
   };
 
   const addCardInput = () => {
-    setCards([...cards, { question: '', answer: '' }]);
+    setCards([...cards, { question: '', answer: '', type: 'subjective' }]);
   };
 
   const removeCardInput = (index: number) => {
@@ -45,7 +58,7 @@ export default function CreateCustomFlashCardPage() {
     <MainLayout title="새 암기카드 만들기">
       <div className={styles.createContainer}>
         <div className={styles.formGroup}>
-          <label htmlFor="title" className={styles.label}>암기카드 묶음 제목</label>
+          <label htmlFor="title" className={styles.titleLabel}>암기카드 묶음 제목</label>
           <input
             id="title"
             type="text"
@@ -60,7 +73,7 @@ export default function CreateCustomFlashCardPage() {
           <div key={index} className={styles.cardInputGroup}>
             <div className={styles.cardHeader}>
               <span className={styles.cardIndex}>{index + 1}</span>
-              <button onClick={() => removeCardInput(index)} className={styles.removeButton}>×</button>
+              <button onClick={() => removeCardInput(index)} className={styles.removeButton} aria-label="카드 삭제">×</button>
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>질문</label>
@@ -72,16 +85,46 @@ export default function CreateCustomFlashCardPage() {
                 rows={2}
               />
             </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>답변</label>
-              <textarea
-                value={card.answer}
-                onChange={(e) => handleCardChange(index, 'answer', e.target.value)}
-                placeholder="답변을 입력하세요"
-                className={styles.textarea}
-                rows={2}
-              />
+            <div className={styles.answerTypeToggle}>
+              <button
+                type="button"
+                className={card.type === 'subjective' ? `${styles.answerTypeBtn} ${'selected'}` : styles.answerTypeBtn}
+                onClick={() => handleCardChange(index, 'type', 'subjective')}
+              >주관식</button>
+              <button
+                type="button"
+                className={card.type === 'boolean' ? `${styles.answerTypeBtn} ${'selected'}` : styles.answerTypeBtn}
+                onClick={() => handleCardChange(index, 'type', 'boolean')}
+              >맞다/아니다</button>
             </div>
+            {card.type === 'subjective' ? (
+              <div className={styles.formGroup}>
+                <label className={styles.label}>답변</label>
+                <textarea
+                  value={card.answer}
+                  onChange={(e) => handleCardChange(index, 'answer', e.target.value)}
+                  placeholder="답변을 입력하세요"
+                  className={styles.textarea}
+                  rows={2}
+                />
+              </div>
+            ) : (
+              <div className={styles.formGroup}>
+                <label className={styles.label}>정답</label>
+                <div className={styles.answerTypeToggle}>
+                  <button
+                    type="button"
+                    className={card.answer === '맞다' ? `${styles.answerTypeBtn} selected` : styles.answerTypeBtn}
+                    onClick={() => handleBooleanAnswer(index, '맞다')}
+                  >맞다</button>
+                  <button
+                    type="button"
+                    className={card.answer === '아니다' ? `${styles.answerTypeBtn} selected` : styles.answerTypeBtn}
+                    onClick={() => handleBooleanAnswer(index, '아니다')}
+                  >아니다</button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
 
