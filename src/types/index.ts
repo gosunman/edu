@@ -27,6 +27,8 @@ export interface FlashCard {
   subject: string;
   chapter: string;
   subChapter: string;
+  type?: 'subjective' | 'boolean'; // 주관식/2지선다
+  groupId?: string; // 커스텀 그룹 구분용
 }
 
 export interface FavoriteItem {

@@ -48,9 +48,25 @@ export default function CreateCustomFlashCardPage() {
   };
 
   const handleSave = () => {
-    // TODO: 로컬 스토리지 또는 DB에 저장
-    console.log('Saving custom cards:', { title, cards });
-    alert('커스텀 암기카드가 저장되었습니다! (콘솔 확인)');
+    // 커스텀 카드 묶음을 로컬스토리지에 저장
+    const groupId = 'custom-' + Date.now();
+    const customCards = cards.map((card, idx) => ({
+      id: groupId + '-' + (idx+1),
+      question: card.question,
+      answer: card.answer,
+      type: card.type,
+      groupId,
+      unitId: groupId,
+      difficulty: 'easy',
+      category: 'custom',
+      subject: title || '커스텀',
+      chapter: title || '커스텀',
+      subChapter: groupId,
+    }));
+    // 기존 로컬스토리지 데이터 불러오기
+    const prev = JSON.parse(localStorage.getItem('customFlashCards') || '[]');
+    localStorage.setItem('customFlashCards', JSON.stringify([...prev, ...customCards]));
+    alert('커스텀 암기카드가 저장되었습니다!');
     router.push('/flashcard');
   };
 

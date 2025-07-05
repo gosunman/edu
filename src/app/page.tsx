@@ -115,7 +115,7 @@ function HomeContent() {
                   className={styles.favoriteActionButton}
                   onClick={() => {
                     if (item.type === 'flashcard') {
-                      router.push('/flashcard');
+                      router.push(`/flashcard/study/${item.id}`);
                     } else {
                       const sim = simulations.find(s => s.id === item.id);
                       if (sim) {
@@ -124,7 +124,7 @@ function HomeContent() {
                     }
                   }}
                 >
-                  {item.type === 'flashcard' ? '암기카드 보기' : '시뮬레이션 실행'}
+                  {item.type === 'flashcard' ? '학습하기' : '시뮬레이션 실행'}
                 </button>
               </div>
             ))}
