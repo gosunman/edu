@@ -14,7 +14,7 @@ import simStyles from '../simulation/simulation.module.css';
 
 interface CardGroup {
   id: string;
-  type: 'subject' | 'subChapter' | 'custom';
+  type: 'subject' | 'subChapter' | 'custom' | 'minorChapter';
   title: string;
   description: string;
   cards: FlashCard[];
@@ -31,11 +31,23 @@ export default function FlashCardPage() {
   const [selectedGrade, setSelectedGrade] = useState<string>('전체');
   const [selectedMajor, setSelectedMajor] = useState<string>('전체');
 
-  // 학년/대단원 목록 추출
+  // 학년/대단원/중단원 목록 추출
   const gradeList = Array.from(new Set(units.map(u => u.grade)));
   const majorList = selectedGrade === '전체'
     ? Array.from(new Set(units.map(u => u.majorChapterTitle)))
     : Array.from(new Set(units.filter(u => u.grade === selectedGrade).map(u => u.majorChapterTitle)));
+  let subList: string[] = [];
+  if (selectedGrade === '전체' && selectedMajor === '전체') {
+    subList = Array.from(new Set(units.map(u => u.subChapterTitle)));
+  } else if (selectedGrade !== '전체' && selectedMajor === '전체') {
+    subList = Array.from(new Set(units.filter(u => u.grade === selectedGrade).map(u => u.subChapterTitle)));
+  } else if (selectedGrade !== '전체' && selectedMajor !== '전체') {
+    subList = Array.from(new Set(units.filter(u => u.grade === selectedGrade && u.majorChapterTitle === selectedMajor).map(u => u.subChapterTitle)));
+  } else if (selectedGrade === '전체' && selectedMajor !== '전체') {
+    subList = Array.from(new Set(units.filter(u => u.majorChapterTitle === selectedMajor).map(u => u.subChapterTitle)));
+  }
+
+  const [selectedSub, setSelectedSub] = useState<string>('전체');
 
   useEffect(() => {
     setMounted(true);
@@ -58,51 +70,20 @@ export default function FlashCardPage() {
     }
 
     const groupData = (cards: FlashCard[]): CardGroup[] => {
-      const groups: { [key: string]: CardGroup } = {};
-
-      cards.forEach(card => {
-        let groupId: string;
-        let groupTitle: string;
-        let groupDescription: string;
-        let groupType: 'subject' | 'subChapter' | 'custom';
-
-        if (card.subject === '한자') {
-          groupId = 'subject-hanja';
-          groupTitle = '한자';
-          groupDescription = '급수별 한자 암기';
-          groupType = 'subject';
-        } else if (card.category === 'science') {
-          const unitInfo = units.find(u => u.subChapter === card.subChapter);
-          groupId = `subchapter-${card.subChapter}`;
-          groupTitle = unitInfo 
-            ? `${unitInfo.majorChapterTitle} - ${unitInfo.subChapterTitle}`
-            : `${card.chapter} - ${card.subChapter}`;
-          groupDescription = `총 ${cards.filter(c => c.subChapter === card.subChapter).length}개의 암기카드`;
-          groupType = 'subChapter';
-        } else if (card.groupId && card.groupId.startsWith('custom-')) {
-          groupId = card.groupId;
-          groupTitle = card.chapter || '커스텀 카드';
-          groupDescription = `내가 만든 카드 (${cards.filter(c => c.groupId === groupId).length}개)`;
-          groupType = 'custom';
-        } else {
-          groupId = `custom-${card.id}`;
-          groupTitle = '커스텀 카드';
-          groupDescription = '사용자 생성 카드';
-          groupType = 'custom';
-        }
-
-        if (!groups[groupId]) {
-          groups[groupId] = { 
-            id: groupId,
-            type: groupType,
-            title: groupTitle,
-            description: groupDescription,
-            cards: []
+      // 소단원별로만 그룹화 (대단원/중단원 그룹화는 완전히 제거)
+      return units
+        .filter(u => u.type === 'unit' && ['중1','중2','중3'].includes(u.grade))
+        .map(unit => {
+          const groupCards = cards.filter(card => card.unitId === unit.id).slice(0, 10);
+          return {
+            id: unit.id,
+            type: 'minorChapter' as const,
+            title: unit.minorChapterTitle,
+            description: `${unit.grade} / ${unit.majorChapterTitle} / ${unit.subChapterTitle} - ${unit.description}`,
+            cards: groupCards
           };
-        }
-        groups[groupId].cards.push(card);
-      });
-      return Object.values(groups);
+        })
+        .filter(group => group.cards.length > 0);
     };
 
     setGroupedCards(groupData(mergedCards));
@@ -110,13 +91,11 @@ export default function FlashCardPage() {
 
   // 필터링된 카드 그룹
   const filteredGroups = groupedCards.filter(group => {
-    if (selectedGrade !== '전체') {
-      const unit = units.find(u => group.title.includes(u.subChapterTitle) && u.grade === selectedGrade);
-      if (!unit) return false;
-    }
-    if (selectedMajor !== '전체') {
-      if (!group.title.includes(selectedMajor)) return false;
-    }
+    const unit = units.find(u => u.id === group.id);
+    if (!unit) return false;
+    if (selectedGrade !== '전체' && unit.grade !== selectedGrade) return false;
+    if (selectedMajor !== '전체' && unit.majorChapterTitle !== selectedMajor) return false;
+    if (selectedSub !== '전체' && unit.subChapterTitle !== selectedSub) return false;
     return true;
   });
 
@@ -161,7 +140,7 @@ export default function FlashCardPage() {
               <span className={simStyles.toggleLabel}>학년</span>
               <button
                 className={`${simStyles.toggleButton} ${selectedGrade === '전체' ? simStyles.active : ''}`}
-                onClick={() => setSelectedGrade('전체')}
+                onClick={() => { setSelectedGrade('전체'); setSelectedMajor('전체'); setSelectedSub('전체'); }}
               >전체</button>
               {gradeList.map(grade => (
                 <button
@@ -170,6 +149,7 @@ export default function FlashCardPage() {
                   onClick={() => {
                     setSelectedGrade(grade);
                     setSelectedMajor('전체');
+                    setSelectedSub('전체');
                   }}
                 >{grade}</button>
               ))}
@@ -178,14 +158,28 @@ export default function FlashCardPage() {
               <span className={simStyles.toggleLabel}>대단원</span>
               <button
                 className={`${simStyles.toggleButton} ${selectedMajor === '전체' ? simStyles.active : ''}`}
-                onClick={() => setSelectedMajor('전체')}
+                onClick={() => { setSelectedMajor('전체'); setSelectedSub('전체'); }}
               >전체</button>
               {majorList.map(major => (
                 <button
                   key={major}
                   className={`${simStyles.toggleButton} ${selectedMajor === major ? simStyles.active : ''}`}
-                  onClick={() => setSelectedMajor(major)}
+                  onClick={() => { setSelectedMajor(major); setSelectedSub('전체'); }}
                 >{major}</button>
+              ))}
+            </div>
+            <div className={simStyles.toggleGroup}>
+              <span className={simStyles.toggleLabel}>중단원</span>
+              <button
+                className={`${simStyles.toggleButton} ${selectedSub === '전체' ? simStyles.active : ''}`}
+                onClick={() => setSelectedSub('전체')}
+              >전체</button>
+              {subList.map(sub => (
+                <button
+                  key={sub}
+                  className={`${simStyles.toggleButton} ${selectedSub === sub ? simStyles.active : ''}`}
+                  onClick={() => setSelectedSub(sub)}
+                >{sub}</button>
               ))}
             </div>
           </div>

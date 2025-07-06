@@ -150,9 +150,9 @@
 }
 
 .filterRow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .filterSelect {
@@ -328,10 +328,12 @@
 
 .toggleGroup {
   display: flex;
+  flex-direction: column !important;
   gap: 10px;
   margin-bottom: 18px;
-  overflow-x: auto;
+  overflow-x: visible;
   padding-bottom: 4px;
+  white-space: normal;
 }
 
 .toggleButton {
@@ -418,4 +420,11 @@
 .favoriteActionButton:hover {
   background: linear-gradient(135deg, #5a67d8 0%, #764ba2 100%);
   box-shadow: 0 4px 16px rgba(102, 126, 234, 0.18);
+}
+
+@media (max-width: 768px) {
+  .toggleGroup {
+    flex-direction: column !important;
+    white-space: normal;
+  }
 } 
