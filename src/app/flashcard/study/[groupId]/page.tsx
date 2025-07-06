@@ -42,6 +42,14 @@ export default function FlashCardStudyPage() {
     } else if (groupId.startsWith('custom-')) {
       filtered = mergedCards.filter(card => card.groupId === groupId);
       title = '커스텀 카드';
+    } else {
+      // 소단원 id로 들어온 경우 (예: ms1-1-1-1)
+      filtered = mergedCards.filter(card => card.unitId === groupId);
+      // units에서 소단원명 찾아서 타이틀로 사용
+      try {
+        const unit = require('@/data/units').units.find((u: any) => u.id === groupId);
+        title = unit ? unit.minorChapterTitle : '';
+      } catch { title = ''; }
     }
     setGroupTitle(title);
     setStudyCards(filtered);
