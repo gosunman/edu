@@ -30,6 +30,18 @@ function HomeContent() {
     return () => { mounted = false; };
   }, []);
 
+  // 즐겨찾기 토글 함수 추가
+  const handleToggleFavorite = async (item: any) => {
+    const mod = await import('@/lib/favorites');
+    const isFavorited = favorites.some(f => f.id === item.id && f.type === item.type);
+    if (isFavorited) {
+      mod.removeFromFavorites(item.id, item.type);
+    } else {
+      mod.addToFavorites(item);
+    }
+    setFavorites(mod.getFavorites());
+  };
+
   // 전체 교육자료 통합 검색
   const filteredFlashCards = searchQuery.trim() ? searchFlashCards(searchQuery) : [];
   const filteredSimulations = searchQuery.trim() ? searchSimulations(searchQuery) : [];
@@ -108,6 +120,15 @@ function HomeContent() {
                     {item.type === 'flashcard' ? '📚' : '🎮'}
                   </span>
                   <span className={styles.favoriteSubject}>{item.subject}</span>
+                  {/* 별표 버튼 추가 */}
+                  <button
+                    className={styles.favoriteButton + (favorites.some(f => f.id === item.id && f.type === item.type) ? ' ' + styles.favorited : '')}
+                    onClick={e => { e.stopPropagation(); handleToggleFavorite(item); }}
+                    aria-label={favorites.some(f => f.id === item.id && f.type === item.type) ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+                    style={{marginLeft:'auto',marginRight:0,background:'none',border:'none',cursor:'pointer',fontSize:'22px'}}
+                  >
+                    {favorites.some(f => f.id === item.id && f.type === item.type) ? '★' : '☆'}
+                  </button>
                 </div>
                 <h3 className={styles.favoriteTitle}>{item.title}</h3>
                 <p className={styles.favoriteDescription}>{item.description}</p>

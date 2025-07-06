@@ -189,6 +189,32 @@ export default function SettingsPage() {
     }
   }, [session?.user?.id]);
 
+  // 컴포넌트 마운트 시 로컬스토리지에서 불러오기
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('myExamInfo');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.examDate) setExamDate(parsed.examDate);
+          if (Array.isArray(parsed.examRange)) setExamRange(parsed.examRange);
+        } catch {}
+      }
+    }
+  }, []);
+
+  // 시험 정보 자동 저장 함수
+  const saveExamInfo = (date: string, range: string[]) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('myExamInfo', JSON.stringify({ examDate: date, examRange: range }));
+    }
+  };
+
+  // examDate, examRange가 바뀔 때마다 자동 저장
+  useEffect(() => {
+    saveExamInfo(examDate, examRange);
+  }, [examDate, examRange]);
+
   const handleSave = () => {
     if (!isValid) return;
     console.log('Settings saved:', { examDate, examRange });
@@ -264,6 +290,7 @@ export default function SettingsPage() {
     }
   };
 
+  // 시험 날짜 입력 핸들러에서 setExamDate만 호출하면 자동 저장됨
   const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (dateInputType === 'manual') {
@@ -335,8 +362,8 @@ export default function SettingsPage() {
                   {examDate ? new Date(examDate).toLocaleDateString('ko-KR') : '미설정'}
                 </span>
               </div>
-              <button onClick={() => setIsEditingDate(!isEditingDate)} className={styles.editButton}>
-                {isEditingDate ? '완료' : '수정'}
+              <button onClick={() => setIsEditingDate(!isEditingDate)} className={styles.editButton + ' ' + styles.secondaryButton}>
+                {isEditingDate ? '닫기' : '수정'}
               </button>
             </div>
           </div>
@@ -378,16 +405,6 @@ export default function SettingsPage() {
                   <div className={styles.dateActions}>
                     <button
                       type="button"
-                      className={styles.saveDateButton}
-                      onClick={() => {
-                        console.log('날짜 저장:', examDate);
-                      }}
-                      disabled={!examDate}
-                    >
-                      저장
-                    </button>
-                    <button
-                      type="button"
                       className={styles.deleteDateButton}
                       onClick={() => {
                         setExamDate('');
@@ -408,8 +425,8 @@ export default function SettingsPage() {
                 <span className={styles.previewLabel}>선택된 단원:</span>
                 <span className={styles.previewValue}>{examRange.length}개</span>
               </div>
-              <button onClick={() => setIsEditingRange(!isEditingRange)} className={styles.editButton}>
-                {isEditingRange ? '완료' : '수정'}
+              <button onClick={() => setIsEditingRange(!isEditingRange)} className={styles.editButton + ' ' + styles.secondaryButton}>
+                {isEditingRange ? '닫기' : '수정'}
               </button>
             </div>
           </div>

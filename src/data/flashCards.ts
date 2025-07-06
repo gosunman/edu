@@ -1,7 +1,99 @@
 import { FlashCard } from '@/types';
+import { units } from './units';
 
 export const flashCards: FlashCard[] = [
-  // (모든 카드 데이터 삭제)
+  // 자동 생성 예시 카드 (각 소단원별 10개)
+  ...units.filter(u => u.type === 'unit').flatMap(unit => {
+    const base = {
+      unitId: unit.id,
+      subject: '과학',
+      chapter: unit.majorChapter,
+      subChapter: unit.subChapter,
+      category: 'science' as const,
+    };
+    return [
+      {
+        id: `${unit.id}-1`,
+        question: `${unit.minorChapterTitle}의 정의를 서술하시오.`,
+        answer: unit.description.replace('학습합니다.', '').replace('이해합니다.', '').replace('배웁니다.', ''),
+        difficulty: 'easy' as const,
+        type: 'subjective' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-2`,
+        question: `${unit.minorChapterTitle}는 ${unit.title}와(과) 관련이 있다. (O/X)`,
+        answer: 'O',
+        difficulty: 'easy' as const,
+        type: 'boolean' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-3`,
+        question: `${unit.minorChapterTitle}의 특징을 2가지 쓰시오.`,
+        answer: `${unit.minorChapterTitle}의 특징 1, 특징 2`,
+        difficulty: 'medium' as const,
+        type: 'subjective' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-4`,
+        question: `${unit.minorChapterTitle}는 ${unit.description.replace('학습합니다.', '').replace('이해합니다.', '').replace('배웁니다.', '')} (O/X)`,
+        answer: 'O',
+        difficulty: 'easy' as const,
+        type: 'boolean' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-5`,
+        question: `${unit.minorChapterTitle}와(과) 관련된 실생활 예시를 한 가지 쓰시오.`,
+        answer: '교과서 및 수업 예시 참고',
+        difficulty: 'medium' as const,
+        type: 'subjective' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-6`,
+        question: `${unit.minorChapterTitle}의 중요성에 대해 서술하시오.`,
+        answer: '중요한 과학 개념임',
+        difficulty: 'medium' as const,
+        type: 'subjective' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-7`,
+        question: `${unit.minorChapterTitle}는 ${unit.majorChapterTitle} 단원에 속한다. (O/X)`,
+        answer: 'O',
+        difficulty: 'easy' as const,
+        type: 'boolean' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-8`,
+        question: `${unit.minorChapterTitle}와(과) 관련된 실험 또는 관찰 활동을 한 가지 쓰시오.`,
+        answer: '교과서 실험 참고',
+        difficulty: 'medium' as const,
+        type: 'subjective' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-9`,
+        question: `${unit.minorChapterTitle}의 예시를 한 가지 쓰시오.`,
+        answer: '교과서 예시 참고',
+        difficulty: 'easy' as const,
+        type: 'subjective' as const,
+        ...base,
+      },
+      {
+        id: `${unit.id}-10`,
+        question: `${unit.minorChapterTitle}에 대해 올바른 설명을 고르시오. (O/X)`,
+        answer: 'O',
+        difficulty: 'easy' as const,
+        type: 'boolean' as const,
+        ...base,
+      },
+    ];
+  })
 ];
 
 // 카테고리별 그룹화 함수

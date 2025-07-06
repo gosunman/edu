@@ -10,6 +10,7 @@ import Link from 'next/link';
 import styles from './flashcard.module.css';
 import FavoriteCard from '@/components/FavoriteCard';
 import { useRouter } from 'next/navigation';
+import simStyles from '../simulation/simulation.module.css';
 
 interface CardGroup {
   id: string;
@@ -25,6 +26,16 @@ export default function FlashCardPage() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const [favoriteGroups, setFavoriteGroups] = useState<string[]>([]);
+
+  // 필터 상태
+  const [selectedGrade, setSelectedGrade] = useState<string>('전체');
+  const [selectedMajor, setSelectedMajor] = useState<string>('전체');
+
+  // 학년/대단원 목록 추출
+  const gradeList = Array.from(new Set(units.map(u => u.grade)));
+  const majorList = selectedGrade === '전체'
+    ? Array.from(new Set(units.map(u => u.majorChapterTitle)))
+    : Array.from(new Set(units.filter(u => u.grade === selectedGrade).map(u => u.majorChapterTitle)));
 
   useEffect(() => {
     setMounted(true);
@@ -97,6 +108,18 @@ export default function FlashCardPage() {
     setGroupedCards(groupData(mergedCards));
   }, []);
 
+  // 필터링된 카드 그룹
+  const filteredGroups = groupedCards.filter(group => {
+    if (selectedGrade !== '전체') {
+      const unit = units.find(u => group.title.includes(u.subChapterTitle) && u.grade === selectedGrade);
+      if (!unit) return false;
+    }
+    if (selectedMajor !== '전체') {
+      if (!group.title.includes(selectedMajor)) return false;
+    }
+    return true;
+  });
+
   // 즐겨찾기 토글
   const handleToggleFavorite = (groupId: string) => {
     let next: string[];
@@ -131,16 +154,49 @@ export default function FlashCardPage() {
   return (
     <MainLayout title="암기카드">
       <div className={styles.container}>
-        <div className={styles.pageHeader}>
-          <h2>암기카드 묶음</h2>
-          <p>학습하고 싶은 묶음을 선택하세요.</p>
-          <Link href="/flashcard/custom/create" className={styles.createButton}>
-            + 새 암기카드 만들기
-          </Link>
+        {/* 시뮬레이션과 동일한 필터 섹션 */}
+        <div className={simStyles.filters}>
+          <div className={simStyles.filterRow}>
+            <div className={simStyles.toggleGroup}>
+              <span className={simStyles.toggleLabel}>학년</span>
+              <button
+                className={`${simStyles.toggleButton} ${selectedGrade === '전체' ? simStyles.active : ''}`}
+                onClick={() => setSelectedGrade('전체')}
+              >전체</button>
+              {gradeList.map(grade => (
+                <button
+                  key={grade}
+                  className={`${simStyles.toggleButton} ${selectedGrade === grade ? simStyles.active : ''}`}
+                  onClick={() => {
+                    setSelectedGrade(grade);
+                    setSelectedMajor('전체');
+                  }}
+                >{grade}</button>
+              ))}
+            </div>
+            <div className={simStyles.toggleGroup}>
+              <span className={simStyles.toggleLabel}>대단원</span>
+              <button
+                className={`${simStyles.toggleButton} ${selectedMajor === '전체' ? simStyles.active : ''}`}
+                onClick={() => setSelectedMajor('전체')}
+              >전체</button>
+              {majorList.map(major => (
+                <button
+                  key={major}
+                  className={`${simStyles.toggleButton} ${selectedMajor === major ? simStyles.active : ''}`}
+                  onClick={() => setSelectedMajor(major)}
+                >{major}</button>
+              ))}
+            </div>
+          </div>
         </div>
-
+        {/* +새 암기카드 만들기 버튼 */}
+        <Link href="/flashcard/custom/create" className={styles.createButton}>
+          + 새 암기카드 만들기
+        </Link>
+        {/* 카드 그룹 목록 */}
         <div className={styles.groupGrid}>
-          {groupedCards.map((group) => (
+          {filteredGroups.map((group) => (
             <FavoriteCard
               key={group.id}
               title={group.title}
