@@ -213,7 +213,6 @@ export default function UnitSelector() {
 
   const handleConfirm = () => {
     if (selectedCards.length > 0) {
-      console.log('Selected cards:', selectedCards);
       router.push('/flashcard');
     }
   };

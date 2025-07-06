@@ -217,7 +217,6 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     if (!isValid) return;
-    console.log('Settings saved:', { examDate, examRange });
     alert('설정이 저장되었습니다!');
   };
 

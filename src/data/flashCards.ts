@@ -94,16 +94,9 @@ function makeQuestionsForUnit(unit: typeof units[number]): FlashCard[] {
   ];
 }
 
-console.log('units length:', units.length);
-console.log('first unit:', units[0]);
-console.log('first 5 unit ids:', units.slice(0,5).map(u=>u.id));
-
 export const flashCards: FlashCard[] = [
   ...units.filter(u => u.type === 'unit' && ['중1','중2','중3'].includes(u.grade)).flatMap(unit => makeQuestionsForUnit(unit))
 ];
-
-console.log('first 5 flashCards:', flashCards.slice(0,5));
-console.log('과학적 탐구 방법 카드:', flashCards.filter(card => card.unitId === 'ms1-1-1-1'));
 
 // 카테고리별 그룹화 함수
 export const getFlashCardsByCategory = (category: string) => {

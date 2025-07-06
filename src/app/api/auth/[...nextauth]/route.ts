@@ -42,7 +42,6 @@ const handler = NextAuth({
           
           // 사용자가 존재하지 않으면 생성
           if (!user) {
-            console.log('User not found, creating new user...');
             user = await AuthService.upsertUser({
               id: token.sub,
               email: session.user.email!,
