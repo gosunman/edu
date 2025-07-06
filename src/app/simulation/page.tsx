@@ -6,6 +6,7 @@ import MainLayout from '@/components/MainLayout';
 import { simulations } from '@/data/simulations';
 import { useFavorites } from '@/lib/favorites';
 import styles from './simulation.module.css';
+import FloatingToTopButton from '@/components/FloatingToTopButton';
 
 export default function SimulationPage() {
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
@@ -177,6 +178,7 @@ export default function SimulationPage() {
           )}
         </div>
       </div>
+      <FloatingToTopButton />
     </MainLayout>
   );
 } 

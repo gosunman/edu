@@ -11,6 +11,7 @@ import styles from './flashcard.module.css';
 import FavoriteCard from '@/components/FavoriteCard';
 import { useRouter } from 'next/navigation';
 import simStyles from '../simulation/simulation.module.css';
+import FloatingToTopButton from '@/components/FloatingToTopButton';
 
 interface CardGroup {
   id: string;
@@ -278,6 +279,7 @@ export default function FlashCardPage() {
           })}
         </div>
       </div>
+      <FloatingToTopButton />
     </MainLayout>
   );
 } 
