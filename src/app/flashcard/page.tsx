@@ -227,8 +227,16 @@ export default function FlashCardPage() {
               key={group.id}
               title={group.title}
               description={group.description}
-              subject={group.type === 'subject' ? '한자' : group.type === 'subChapter' ? '과학' : '커스텀'}
-              type={group.type === 'subject' ? 'flashcard' : group.type === 'subChapter' ? 'flashcard' : 'flashcard'}
+              subject={
+                group.type === 'custom'
+                  ? '커스텀'
+                  : (() => {
+                      const unit = units.find(u => u.id === group.id);
+                      if (!unit) return '';
+                      return `${unit.grade} / ${unit.majorChapterTitle} / ${unit.subChapterTitle}`;
+                    })()
+              }
+              type="flashcard"
               onClick={() => router.push(`/flashcard/study/${group.id}`)}
               actionLabel="학습하기"
               isFavorite={favoriteGroups.includes(group.id)}
