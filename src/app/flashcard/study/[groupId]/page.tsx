@@ -57,7 +57,7 @@ export default function FlashCardStudyPage() {
       <MainLayout title="학습할 카드 없음">
         <div className={styles.container} style={{textAlign:'center',padding:'60px 0',color:'#888'}}>
           <h2 style={{fontSize:'22px',marginBottom:'12px'}}>학습할 카드가 없습니다.</h2>
-          <p>이 그룹에는 암기카드가 존재하지 않습니다.</p>
+          <p style={{marginBottom:'24px'}}>이 그룹에는 암기카드가 존재하지 않습니다.</p>
           <button className={styles.createButton} onClick={()=>router.push('/flashcard')}>돌아가기</button>
         </div>
       </MainLayout>
