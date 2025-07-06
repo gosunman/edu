@@ -162,56 +162,76 @@ export default function FlashCardPage() {
           <div className={simStyles.filterRow}>
             <div className={simStyles.toggleGroup}>
               <span className={simStyles.toggleLabel}>학년</span>
-              <button
-                className={`${simStyles.toggleButton} ${selectedGrade === '전체' ? simStyles.active : ''}`}
-                onClick={() => { setSelectedGrade('전체'); setSelectedMajor('전체'); setSelectedSub('전체'); }}
-              >전체</button>
-              {gradeList.map(grade => (
+              <div className={simStyles.carousel}>
                 <button
-                  key={grade}
-                  className={`${simStyles.toggleButton} ${selectedGrade === grade ? simStyles.active : ''}`}
-                  onClick={() => {
-                    setSelectedGrade(grade);
-                    setSelectedMajor('전체');
-                    setSelectedSub('전체');
-                  }}
-                >{grade}</button>
-              ))}
+                  className={`${simStyles.toggleButton} ${selectedGrade === '전체' ? simStyles.active : ''}`}
+                  onClick={() => { setSelectedGrade('전체'); setSelectedMajor('전체'); setSelectedSub('전체'); }}
+                >전체</button>
+                {gradeList.map(grade => (
+                  <button
+                    key={grade}
+                    className={`${simStyles.toggleButton} ${selectedGrade === grade ? simStyles.active : ''}`}
+                    onClick={() => {
+                      setSelectedGrade(grade);
+                      setSelectedMajor('전체');
+                      setSelectedSub('전체');
+                    }}
+                  >{grade}</button>
+                ))}
+              </div>
             </div>
             <div className={simStyles.toggleGroup}>
               <span className={simStyles.toggleLabel}>대단원</span>
               {selectedGrade !== '커스텀' && (
-                <>
+                <div className={simStyles.carousel}>
                   <button
                     className={`${simStyles.toggleButton} ${selectedMajor === '전체' ? simStyles.active : ''}`}
                     onClick={() => { setSelectedMajor('전체'); setSelectedSub('전체'); }}
                   >전체</button>
-                  {majorList.map(major => (
-                    <button
-                      key={major}
-                      className={`${simStyles.toggleButton} ${selectedMajor === major ? simStyles.active : ''}`}
-                      onClick={() => { setSelectedMajor(major); setSelectedSub('전체'); }}
-                    >{major}</button>
-                  ))}
-                </>
+                  {majorList.map(major => {
+                    let unit;
+                    if (selectedGrade === '전체') {
+                      unit = units.find(u => u.majorChapterTitle === major);
+                    } else {
+                      unit = units.find(u => u.majorChapterTitle === major && u.grade === selectedGrade);
+                    }
+                    const majorNum = unit ? unit.majorChapter : '';
+                    return (
+                      <button
+                        key={major}
+                        className={`${simStyles.toggleButton} ${selectedMajor === major ? simStyles.active : ''}`}
+                        onClick={() => { setSelectedMajor(major); setSelectedSub('전체'); }}
+                      >{majorNum ? `${majorNum}.` : ''}{major}</button>
+                    );
+                  })}
+                </div>
               )}
             </div>
             <div className={simStyles.toggleGroup}>
               <span className={simStyles.toggleLabel}>중단원</span>
               {selectedGrade !== '커스텀' && (
-                <>
+                <div className={simStyles.carousel}>
                   <button
                     className={`${simStyles.toggleButton} ${selectedSub === '전체' ? simStyles.active : ''}`}
                     onClick={() => setSelectedSub('전체')}
                   >전체</button>
-                  {subList.map(sub => (
-                    <button
-                      key={sub}
-                      className={`${simStyles.toggleButton} ${selectedSub === sub ? simStyles.active : ''}`}
-                      onClick={() => setSelectedSub(sub)}
-                    >{sub}</button>
-                  ))}
-                </>
+                  {subList.map(sub => {
+                    let unit;
+                    if (selectedGrade === '전체') {
+                      unit = units.find(u => u.subChapterTitle === sub);
+                    } else {
+                      unit = units.find(u => u.subChapterTitle === sub && u.grade === selectedGrade);
+                    }
+                    const subNum = unit ? unit.subChapter : '';
+                    return (
+                      <button
+                        key={sub}
+                        className={`${simStyles.toggleButton} ${selectedSub === sub ? simStyles.active : ''}`}
+                        onClick={() => setSelectedSub(sub)}
+                      >{subNum ? `${subNum}.` : ''}{sub}</button>
+                    );
+                  })}
+                </div>
               )}
             </div>
           </div>
@@ -222,27 +242,40 @@ export default function FlashCardPage() {
         </Link>
         {/* 카드 그룹 목록 */}
         <div className={styles.groupGrid}>
-          {filteredGroups.map((group) => (
-            <FavoriteCard
-              key={group.id}
-              title={group.title}
-              description={group.description}
-              subject={
-                group.type === 'custom'
-                  ? '커스텀'
-                  : (() => {
-                      const unit = units.find(u => u.id === group.id);
-                      if (!unit) return '';
-                      return `${unit.grade} / ${unit.majorChapterTitle} / ${unit.subChapterTitle}`;
-                    })()
-              }
-              type="flashcard"
-              onClick={() => router.push(`/flashcard/study/${group.id}`)}
-              actionLabel="학습하기"
-              isFavorite={favoriteGroups.includes(group.id)}
-              onToggleFavorite={() => handleToggleFavorite(group.id)}
-            />
-          ))}
+          {filteredGroups.map((group) => {
+            if (group.type === 'custom') {
+              return (
+                <FavoriteCard
+                  key={group.id}
+                  title={group.title}
+                  description={group.description}
+                  customLabel="커스텀"
+                  type="flashcard"
+                  onClick={() => router.push(`/flashcard/study/${group.id}`)}
+                  actionLabel="학습하기"
+                  isFavorite={favoriteGroups.includes(group.id)}
+                  onToggleFavorite={() => handleToggleFavorite(group.id)}
+                />
+              );
+            } else {
+              const unit = units.find(u => u.id === group.id);
+              return (
+                <FavoriteCard
+                  key={group.id}
+                  title={group.title}
+                  description={group.description}
+                  gradeLabel={unit ? unit.grade : ''}
+                  majorLabel={unit ? `${unit.majorChapter}.${unit.majorChapterTitle}` : ''}
+                  subLabel={unit ? `${unit.subChapter}.${unit.subChapterTitle}` : ''}
+                  type="flashcard"
+                  onClick={() => router.push(`/flashcard/study/${group.id}`)}
+                  actionLabel="학습하기"
+                  isFavorite={favoriteGroups.includes(group.id)}
+                  onToggleFavorite={() => handleToggleFavorite(group.id)}
+                />
+              );
+            }
+          })}
         </div>
       </div>
     </MainLayout>
