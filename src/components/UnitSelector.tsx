@@ -405,10 +405,6 @@ export default function UnitSelector() {
 
       <BottomNavigation 
         activeMode="units"
-        onModeChange={(mode) => {
-          if (mode === 'main') router.push('/');
-        }}
-        onSettingClick={() => {}}
         currentLv={0}
         totalLv={0}
       />
