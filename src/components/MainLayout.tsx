@@ -92,8 +92,6 @@ export default function MainLayout({
 
       <BottomNavigation
         activeMode={activeMode}
-        onModeChange={handleModeChange}
-        onSettingClick={handleSettingClick}
         currentLv={currentLv}
         totalLv={totalLv}
       />
