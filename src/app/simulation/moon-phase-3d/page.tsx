@@ -18,6 +18,8 @@ export default function MoonPhase3DPage() {
   const [showOrbits, setShowOrbits] = useState(true);
   const [showSunlight, setShowSunlight] = useState(true);
   const [cameraMode, setCameraMode] = useState<'free' | 'earth' | 'moon'>('free');
+  const [manualMode, setManualMode] = useState(false);
+  const [moonAngle, setMoonAngle] = useState(0);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -130,12 +132,13 @@ export default function MoonPhase3DPage() {
     const stars = new THREE.Points(starsGeometry, starsMaterial);
     scene.add(stars);
 
-    // 마우스 컨트롤 (OrbitControls 대신 간단한 구현)
+    // 마우스 컨트롤 (회전 + 확대/축소)
     let isMouseDown = false;
     let mouseX = 0;
     let mouseY = 0;
     let targetRotationX = 0;
     let targetRotationY = 0;
+    let targetDistance = 200;
 
     const handleMouseDown = (event: MouseEvent) => {
       isMouseDown = true;
@@ -160,22 +163,36 @@ export default function MoonPhase3DPage() {
       isMouseDown = false;
     };
 
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const zoomSpeed = 0.1;
+      targetDistance += event.deltaY * zoomSpeed;
+      // 최소/최대 거리 제한
+      targetDistance = Math.max(50, Math.min(500, targetDistance));
+    };
+
     renderer.domElement.addEventListener('mousedown', handleMouseDown);
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
     renderer.domElement.addEventListener('mouseup', handleMouseUp);
+    renderer.domElement.addEventListener('wheel', handleWheel);
 
     // 애니메이션
-    let moonAngle = 0;
+    let currentMoonAngle = moonAngle;
     let earthRotation = 0;
     let moonRotation = 0;
     
     function animate() {
+      if (isRunning && !manualMode) {
+        // 자동 모드: 달 공전
+        currentMoonAngle += 0.005 * speed;
+        setMoonAngle(currentMoonAngle);
+      }
+      
+      // 달 위치 업데이트 (자동 또는 수동)
+      moon.position.x = 60 * Math.cos(currentMoonAngle);
+      moon.position.z = 60 * Math.sin(currentMoonAngle);
+      
       if (isRunning) {
-        // 달 공전
-        moonAngle += 0.005 * speed;
-        moon.position.x = 60 * Math.cos(moonAngle);
-        moon.position.z = 60 * Math.sin(moonAngle);
-        
         // 달 자전
         moonRotation += 0.01 * speed;
         moon.rotation.y = moonRotation;
@@ -185,10 +202,10 @@ export default function MoonPhase3DPage() {
         earth.rotation.y = earthRotation;
       }
 
-      // 카메라 회전
-      camera.position.x = 200 * Math.cos(targetRotationY) * Math.cos(targetRotationX);
-      camera.position.y = 200 * Math.sin(targetRotationX);
-      camera.position.z = 200 * Math.sin(targetRotationY) * Math.cos(targetRotationX);
+      // 카메라 회전 + 확대/축소
+      camera.position.x = targetDistance * Math.cos(targetRotationY) * Math.cos(targetRotationX);
+      camera.position.y = targetDistance * Math.sin(targetRotationX);
+      camera.position.z = targetDistance * Math.sin(targetRotationY) * Math.cos(targetRotationX);
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
@@ -219,10 +236,11 @@ export default function MoonPhase3DPage() {
       renderer.domElement.removeEventListener('mousedown', handleMouseDown);
       renderer.domElement.removeEventListener('mousemove', handleMouseMove);
       renderer.domElement.removeEventListener('mouseup', handleMouseUp);
+      renderer.domElement.removeEventListener('wheel', handleWheel);
       window.removeEventListener('resize', handleResize);
       mountRef.current?.removeChild(renderer.domElement);
     };
-  }, [isRunning, speed, showOrbits, showSunlight]);
+      }, [isRunning, speed, showOrbits, showSunlight, manualMode, moonAngle]);
 
   return (
     <MainLayout title="달의 위상변화 3D 시뮬레이션">
@@ -302,6 +320,35 @@ export default function MoonPhase3DPage() {
               햇빛 방향
             </label>
           </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <label style={{ fontWeight: "500", color: "#374151", fontSize: "0.9rem" }}>
+              <input
+                type="checkbox"
+                checked={manualMode}
+                onChange={(e) => setManualMode(e.target.checked)}
+                style={{ marginRight: "8px" }}
+              />
+              수동 모드
+            </label>
+          </div>
+
+          {manualMode && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <label style={{ fontWeight: "500", color: "#374151", fontSize: "0.9rem" }}>
+                달 위치: {Math.round((moonAngle * 180 / Math.PI) % 360)}°
+              </label>
+              <input
+                type="range"
+                min="0"
+                max={Math.PI * 2}
+                step={0.01}
+                value={moonAngle}
+                onChange={(e) => setMoonAngle(Number(e.target.value))}
+                style={{ width: "150px" }}
+              />
+            </div>
+          )}
         </div>
 
         {/* 3D 시뮬레이션 영역 */}
@@ -325,15 +372,18 @@ export default function MoonPhase3DPage() {
           marginTop: "20px", 
           borderLeft: "4px solid #3b82f6" 
         }}>
-          <h3 style={{ color: "#1f2937", marginBottom: "12px" }}>3D 시뮬레이션 조작법</h3>
-          <ul style={{ color: "#374151", lineHeight: "1.7" }}>
-            <li><strong>마우스 드래그:</strong> 화면을 드래그하여 시점을 자유롭게 회전할 수 있습니다.</li>
-            <li><strong>달의 공전:</strong> 달이 지구 주위를 공전하는 모습을 3D로 관찰할 수 있습니다.</li>
-            <li><strong>자전:</strong> 지구와 달이 각각 자전하는 모습을 볼 수 있습니다.</li>
-            <li><strong>햇빛 방향:</strong> 노란색 선으로 태양에서 오는 빛의 방향을 표시합니다.</li>
-            <li><strong>궤도:</strong> 달의 공전 궤도를 회색 선으로 표시합니다.</li>
-            <li><strong>속도 조절:</strong> 슬라이더로 시뮬레이션 속도를 조절할 수 있습니다.</li>
-          </ul>
+                     <h3 style={{ color: "#1f2937", marginBottom: "12px" }}>3D 시뮬레이션 조작법</h3>
+           <ul style={{ color: "#374151", lineHeight: "1.7" }}>
+             <li><strong>마우스 드래그:</strong> 화면을 드래그하여 시점을 자유롭게 회전할 수 있습니다.</li>
+             <li><strong>마우스 휠:</strong> 휠을 위아래로 스크롤하여 확대/축소할 수 있습니다.</li>
+             <li><strong>수동 모드:</strong> 체크박스를 활성화하면 달을 직접 조작할 수 있습니다.</li>
+             <li><strong>달 위치 조절:</strong> 수동 모드에서 슬라이더로 달의 위치를 0°~360° 범위에서 조절할 수 있습니다.</li>
+             <li><strong>달의 공전:</strong> 달이 지구 주위를 공전하는 모습을 3D로 관찰할 수 있습니다.</li>
+             <li><strong>자전:</strong> 지구와 달이 각각 자전하는 모습을 볼 수 있습니다.</li>
+             <li><strong>햇빛 방향:</strong> 노란색 선으로 태양에서 오는 빛의 방향을 표시합니다.</li>
+             <li><strong>궤도:</strong> 달의 공전 궤도를 회색 선으로 표시합니다.</li>
+             <li><strong>속도 조절:</strong> 슬라이더로 시뮬레이션 속도를 조절할 수 있습니다.</li>
+           </ul>
         </div>
       </div>
     </MainLayout>
