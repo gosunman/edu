@@ -13,7 +13,7 @@ export default function MoonPhase3DPage() {
   const animationIdRef = useRef<number | null>(null);
   
   // 상태 관리
-  const [isRunning, setIsRunning] = useState(true);
+  const [isRunning, setIsRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [showOrbits, setShowOrbits] = useState(true);
   const [showSunlight, setShowSunlight] = useState(true);
