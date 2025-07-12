@@ -20,6 +20,9 @@ export default function MoonPhase3DPage() {
   const [cameraMode, setCameraMode] = useState<'free' | 'earth' | 'moon'>('free');
   const [manualMode, setManualMode] = useState(false);
   const [moonAngle, setMoonAngle] = useState(0);
+  const [cameraRotationX, setCameraRotationX] = useState(0);
+  const [cameraRotationY, setCameraRotationY] = useState(0);
+  const [cameraDistance, setCameraDistance] = useState(200);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -136,9 +139,9 @@ export default function MoonPhase3DPage() {
     let isMouseDown = false;
     let mouseX = 0;
     let mouseY = 0;
-    let targetRotationX = 0;
-    let targetRotationY = 0;
-    let targetDistance = 200;
+    let targetRotationX = cameraRotationX;
+    let targetRotationY = cameraRotationY;
+    let targetDistance = cameraDistance;
 
     const handleMouseDown = (event: MouseEvent) => {
       isMouseDown = true;
@@ -207,6 +210,11 @@ export default function MoonPhase3DPage() {
       camera.position.y = targetDistance * Math.sin(targetRotationX);
       camera.position.z = targetDistance * Math.sin(targetRotationY) * Math.cos(targetRotationX);
       camera.lookAt(0, 0, 0);
+      
+      // 상태 업데이트 (애니메이션 루프에서 한 번만)
+      setCameraRotationX(targetRotationX);
+      setCameraRotationY(targetRotationY);
+      setCameraDistance(targetDistance);
 
       renderer.render(scene, camera);
       animationIdRef.current = requestAnimationFrame(animate);
