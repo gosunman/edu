@@ -44,14 +44,22 @@ export default function MoonPhase3DPage() {
     mountRef.current.appendChild(renderer.domElement);
 
     // 조명 설정
-    const ambient = new THREE.AmbientLight(0x404040, 0.2);
+    const ambient = new THREE.AmbientLight(0x404040, 0.4);
     scene.add(ambient);
     
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
     sunLight.position.set(500, 0, 0);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 0.1;
+    sunLight.shadow.camera.far = 1000;
+    sunLight.shadow.camera.left = -200;
+    sunLight.shadow.camera.right = 200;
+    sunLight.shadow.camera.top = 200;
+    sunLight.shadow.camera.bottom = -200;
+    sunLight.shadow.bias = -0.0001;
+    sunLight.shadow.normalBias = 0.02;
     scene.add(sunLight);
 
     // 태양 (자체 발광)
@@ -61,7 +69,7 @@ export default function MoonPhase3DPage() {
     });
     const sun = new THREE.Mesh(sunGeo, sunMat);
     sun.position.set(400, 0, 0);
-    sun.castShadow = true;
+    sun.castShadow = false; // 태양은 그림자를 만들지 않음
     scene.add(sun);
 
     // 지구 (텍스처 없이 색상으로 대륙/바다 표현)
@@ -73,7 +81,7 @@ export default function MoonPhase3DPage() {
     const earth = new THREE.Mesh(earthGeo, earthMat);
     earth.position.set(0, 0, 0);
     earth.castShadow = true;
-    earth.receiveShadow = true;
+    earth.receiveShadow = false; // 지구는 그림자를 받지 않음
     scene.add(earth);
 
     // 달
@@ -85,7 +93,7 @@ export default function MoonPhase3DPage() {
     const moon = new THREE.Mesh(moonGeo, moonMat);
     moon.position.set(60, 0, 0);
     moon.castShadow = true;
-    moon.receiveShadow = true;
+    moon.receiveShadow = false; // 달은 그림자를 받지 않음
     scene.add(moon);
 
     // 궤도 표시 (선으로)
