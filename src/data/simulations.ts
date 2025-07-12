@@ -25,6 +25,17 @@ export const simulations: Simulation[] = [
     path: '/simulation/moon-phase'
   },
   {
+    id: 'moon-phase-3d',
+    title: '달의 위상변화 3D 시뮬레이션',
+    description: '태양-지구-달의 3D 운동과 위상변화를 입체적으로 관찰해보세요.',
+    category: 'science',
+    subject: '중1 과학',
+    chapter: '지구와 달',
+    subChapter: '달의 위상변화',
+    difficulty: 'medium',
+    path: '/simulation/moon-phase-3d'
+  },
+  {
     id: 'magnetic-field',
     title: '자기장 시뮬레이터',
     description: '다양한 자석과 전류의 자기장을 탐구해보세요.',

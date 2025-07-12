@@ -13,11 +13,13 @@
   "dependencies": {
     "@auth/core": "^0.34.2",
     "@supabase/supabase-js": "^2.50.1",
+    "@types/three": "^0.178.1",
     "@vercel/analytics": "^1.5.0",
     "next": "15.3.4",
     "next-auth": "^4.24.11",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "three": "^0.178.0"
   },
   "devDependencies": {
     "@types/node": "^20",
